@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BS Admin | Bóveda de Diseños</title>
+    <title>BS Admin | Bóveda de Diseños VIP</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -35,7 +35,7 @@
         <div class="flex items-center justify-between mb-10 border-b border-gray-800 pb-6">
             <div>
                 <h1 class="text-3xl font-playfair tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Designs</span></h1>
-                <p class="text-gray-400 text-[10px] tracking-[0.2em] mt-2 uppercase font-bold">Base de Datos Central: FIREBASE</p>
+                <p class="text-gray-400 text-[10px] tracking-[0.2em] mt-2 uppercase font-bold">Firebase Cloud + Motor de Limpieza Láser</p>
             </div>
             <a href="ventas.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
                 Ver Tienda en Vivo
@@ -44,7 +44,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div class="space-y-6">
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Diseño (PNG Transparente)</h2>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Diseño</h2>
                 
                 <div class="space-y-3">
                     <label class="text-[10px] tracking-widest uppercase text-gray-400">Nombre del Diseño</label>
@@ -53,11 +53,21 @@
 
                 <div class="space-y-3">
                     <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen</label>
-                    <input type="file" id="designImage" accept="image/png, image/jpeg" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded-lg cursor-pointer">
+                    <input type="file" id="designImage" accept="image/*" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded-lg cursor-pointer">
+                </div>
+
+                <div class="space-y-2 border border-tm-gold/50 p-4 rounded-xl bg-black">
+                    <label class="text-[10px] tracking-widest uppercase text-tm-gold font-bold">Motor de Limpieza (IA Básica)</label>
+                    <select id="bgRemover" class="w-full bg-tm-gray border border-gray-700 text-white px-4 py-3 rounded focus:outline-none focus:border-tm-gold text-[10px] tracking-widest uppercase cursor-pointer">
+                        <option value="none">Dejar como está (Ya es PNG sin fondo)</option>
+                        <option value="remove-white">Borrar Fondo Blanco (Corregir JPG WhatsApp)</option>
+                        <option value="remove-black">Borrar Fondo Negro</option>
+                    </select>
+                    <p class="text-[9px] text-gray-500 italic mt-2">* El motor detecta los bordes y aniquila el fondo elegido antes de subir a Firebase.</p>
                 </div>
 
                 <button onclick="saveDesign()" class="w-full bg-tm-gold text-black font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1">
-                    Publicar en Servidor
+                    Purificar y Subir a la Nube
                 </button>
                 <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden text-center font-bold"></p>
             </div>
@@ -92,6 +102,7 @@
 
         const designNameInput = document.getElementById('designName');
         const designImageInput = document.getElementById('designImage');
+        const bgRemoverSelect = document.getElementById('bgRemover'); // Capturamos el selector del motor
         const designsList = document.getElementById('designsList');
         const statusMsg = document.getElementById('statusMsg');
 
@@ -125,26 +136,27 @@
             showStatus("Error conectando a Firebase: Revisa permisos.", "text-red-500");
         });
 
-        // MOTOR DE COMPRESIÓN AGRESIVA (MAX 600px para evitar límite 1MB)
+        // MOTOR DE LIMPIEZA + COMPRESIÓN + SUBIDA
         function saveDesign() {
             const name = designNameInput.value.trim().toUpperCase();
             const file = designImageInput.files[0];
+            const bgMode = bgRemoverSelect.value; // Capturamos la opción de limpieza
 
             if(!name || !file) {
                 showStatus('Faltan datos o imagen, Jefe.', 'text-red-500');
                 return;
             }
 
-            showStatus('Comprimiendo y subiendo al satélite...', 'text-tm-gold');
+            showStatus('Purificando y subiendo al satélite...', 'text-tm-gold');
 
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: true }); // Necesario para la limpieza
                     
-                    // COMPRESIÓN STARK: Límite estricto de 500px para PNGs
+                    // Compresión STARK (Límite 500px para evitar peso muerto)
                     const MAX_SIZE = 500; 
                     let width = img.width;
                     let height = img.height;
@@ -159,25 +171,52 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Forzamos la calidad al comprimir
-                    const compressedBase64 = canvas.toDataURL('image/png');
+                    // ==========================================
+                    // INICIO: MOTOR DE LIMPIEZA LÁSER RESTAURADO
+                    // ==========================================
+                    if (bgMode !== 'none') {
+                        const imageData = ctx.getImageData(0, 0, width, height);
+                        const data = imageData.data;
+                        
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i+1];
+                            const b = data[i+2];
+                            
+                            // Si es blanco y pidieron borrar blanco
+                            if (bgMode === 'remove-white' && r > 220 && g > 220 && b > 220) {
+                                data[i+3] = 0; // Alpha = 0 (Transparente)
+                            }
+                            // Si es negro y pidieron borrar negro
+                            else if (bgMode === 'remove-black' && r < 40 && g < 40 && b < 40) {
+                                data[i+3] = 0; // Alpha = 0 (Transparente)
+                            }
+                        }
+                        ctx.putImageData(imageData, 0, 0);
+                    }
+                    // ==========================================
+                    // FIN: MOTOR DE LIMPIEZA
+                    // ==========================================
 
-                    // Verificar peso aproximado
-                    const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
+                    // Forzamos PNG para mantener la transparencia generada por el motor
+                    const processedBase64 = canvas.toDataURL('image/png');
+
+                    const sizeInMB = (processedBase64.length * 0.75) / (1024 * 1024);
                     if(sizeInMB > 1.0) {
-                        showStatus('La imagen sigue siendo muy pesada. Usa una más simple.', 'text-red-500');
+                        showStatus('Error: Imagen muy pesada post-procesado.', 'text-red-500');
                         return;
                     }
 
                     // GUARDADO 100% FIREBASE
                     db.collection("designs").add({
                         name: name,
-                        image: compressedBase64,
+                        image: processedBase64,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
                         designNameInput.value = '';
                         designImageInput.value = '';
-                        showStatus('DISEÑO GUARDADO EN LA NUBE.', 'text-green-500');
+                        bgRemoverSelect.value = 'none'; // Resetear selector
+                        showStatus('DISEÑO PURIFICADO Y GUARDADO.', 'text-green-500');
                     }).catch((error) => {
                         console.error("Error Firebase: ", error);
                         showStatus('Error en Firebase (Revisa Reglas/Consola).', 'text-red-500');
