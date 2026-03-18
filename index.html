@@ -33,56 +33,158 @@
     <style>
         body { background-color: #030303; color: white; margin: 0; overflow-x: hidden; }
 
-        #threejs-canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; 
-            pointer-events: none; opacity: 1; 
+        /* ========================================== */
+        /* INTERFAZ DE ENTRADA (LOADER) CORREGIDA     */
+        /* ========================================== */
+        #stark-loader {
+            position: fixed; inset: 0; z-index: 9999;
+            background-color: #030303;
+            background-image: radial-gradient(circle at center, rgba(212, 175, 55, 0.08) 0%, #030303 70%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
         }
 
-        .overlay-dark {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
-            z-index: -1; pointer-events: none;
+        .loader-card-scene {
+            width: 300px; height: 190px; 
+            perspective: 1500px; /* Profundidad aumentada para evitar choques */
+            margin-bottom: 3rem;
+            z-index: 10;
         }
 
-        .glass-nav {
-            background: rgba(5, 5, 5, 0.6); 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        .loader-card {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d;
+            animation: starkCardFlip 4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+            border-radius: 14px;
         }
 
-        .glass-panel {
-            background: rgba(10, 10, 10, 0.3); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        /* Separación Z para que no se partan en dos al girar */
+        .loader-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 14px;
+            overflow: hidden;
         }
 
-        .btn-action {
-            background: linear-gradient(90deg, #b38728, #fcf6ba, #bf953f, #fcf6ba, #b38728);
-            background-size: 200% auto;
-            color: black;
-            animation: shine 4s linear infinite;
-            transition: 0.5s;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        /* Cara Frontal: Metal Cepillado Realista */
+        .loader-front {
+            background: linear-gradient(135deg, #181818 0%, #2a2a2a 40%, #111111 100%);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 0 30px rgba(0,0,0,0.8);
+            transform: rotateY(0deg) translateZ(1px); /* Solución Z-fighting */
         }
-        .btn-action:hover {
-            transform: scale(1.05) translateY(-3px);
-            box-shadow: 0 0 40px rgba(212, 175, 55, 0.7);
+
+        /* Cara Trasera */
+        .loader-back {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+            transform: rotateY(180deg) translateZ(1px); /* Solución Z-fighting */
+            display: flex; flex-direction: column;
         }
+
+        /* Destello Dinámico CSS */
+        .loader-shine {
+            position: absolute; top: -150%; left: -150%; width: 400%; height: 400%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+            animation: lightSweep 4s infinite linear;
+            pointer-events: none; z-index: 50;
+        }
+
+        @keyframes lightSweep {
+            0% { transform: translate(-30%, -30%); }
+            50% { transform: translate(15%, 15%); }
+            100% { transform: translate(40%, 40%); }
+        }
+
+        @keyframes starkCardFlip {
+            0% { transform: rotateY(0deg) translateY(0); box-shadow: 0 15px 30px rgba(0,0,0,0.8); }
+            50% { transform: rotateY(180deg) translateY(-20px); box-shadow: 0 35px 50px rgba(212, 175, 55, 0.15); }
+            100% { transform: rotateY(360deg) translateY(0); box-shadow: 0 15px 30px rgba(0,0,0,0.8); }
+        }
+
+        /* Relieve de números hiperrealista */
+        .embossed-text {
+            text-shadow: 
+                1px 1px 0px rgba(0,0,0,0.9), 
+                -1px -1px 0px rgba(255,255,255,0.3),
+                2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Barra de carga */
+        .loader-bar-container {
+            width: 240px; height: 2px; background: rgba(255,255,255,0.1); overflow: hidden; margin-top: 1rem;
+            position: relative; z-index: 1;
+        }
+
+        .loader-bar {
+            height: 100%; background: #D4AF37; width: 0%;
+            animation: starkLoadBar 3s ease-in-out forwards;
+            box-shadow: 0 0 15px #D4AF37;
+        }
+
+        @keyframes starkLoadBar { 0% { width: 0%; } 40% { width: 60%; } 100% { width: 100%; } }
+        /* ========================================== */
+
+        #threejs-canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 1; }
+        .overlay-dark { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%); z-index: -1; pointer-events: none; }
+        .glass-nav { background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .glass-panel { background: rgba(10, 10, 10, 0.3); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+
+        .btn-action { background: linear-gradient(90deg, #b38728, #fcf6ba, #bf953f, #fcf6ba, #b38728); background-size: 200% auto; color: black; animation: shine 4s linear infinite; transition: 0.5s; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .btn-action:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 0 40px rgba(212, 175, 55, 0.7); }
         @keyframes shine { to { background-position: 200% center; } }
-
         .fade-in { animation: fadeIn 1.5s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
     </style>
 </head>
 <body class="font-sans">
 
+    <div id="stark-loader">
+        <div class="loader-card-scene">
+            <div class="loader-card">
+                
+                <div class="loader-face loader-front flex flex-col justify-between p-6">
+                    <div class="loader-shine"></div> <div class="relative z-10 w-full flex justify-between items-start">
+                        <span class="text-tm-gold font-playfair font-bold text-sm tracking-widest drop-shadow-md">BS PREMIUM</span>
+                        <svg class="w-6 h-6 text-gray-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+
+                    <div class="relative z-10 w-12 h-9 bg-gradient-to-br from-[#d4af37] via-[#f3e5ab] to-[#997a00] rounded-md border border-black/80 shadow-[inset_0_0_3px_rgba(255,255,255,0.7)] flex flex-col justify-evenly px-[3px]">
+                        <div class="w-full h-[1px] bg-black/40"></div>
+                        <div class="w-full h-[1px] bg-black/40"></div>
+                        <div class="w-full h-[1px] bg-black/40"></div>
+                    </div>
+
+                    <div class="relative z-10 w-full mt-4">
+                        <div class="font-mono text-[#aaaaaa] text-lg tracking-[0.15em] embossed-text flex justify-between w-[95%]">
+                            <span>4230</span><span>1234</span><span>5678</span><span>9010</span>
+                        </div>
+                        <div class="flex justify-between items-end mt-2">
+                            <span class="font-sans text-[10px] text-gray-400 tracking-[0.25em] uppercase font-bold embossed-text">SANTIAGO RAMOS</span>
+                            <span class="font-playfair text-[14px] text-tm-gold font-bold italic drop-shadow-md">VIP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loader-face loader-back">
+                    <div class="w-full h-12 bg-[#050505] mt-5 opacity-90 shadow-[inset_0_-2px_5px_rgba(0,0,0,1)] border-b border-white/5"></div>
+                    <div class="w-[85%] h-8 bg-gray-200 mt-4 mx-auto rounded-sm flex items-center px-4 opacity-90 shadow-inner">
+                        <div class="w-full border-b border-gray-400 opacity-50 relative">
+                            <span class="absolute right-0 -top-[16px] text-black font-mono text-[11px] italic font-bold">CVV ***</span>
+                        </div>
+                    </div>
+                    <span class="text-gray-500 text-[7px] uppercase tracking-[0.3em] text-center mt-auto mb-4 font-bold">Ingeniería Metálica Autorizada</span>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="flex flex-col items-center relative z-20">
+            <p class="text-tm-gold text-[10px] tracking-[0.5em] uppercase font-bold">Autenticando Bóveda</p>
+            <div class="loader-bar-container">
+                <div class="loader-bar"></div>
+            </div>
+        </div>
+    </div>
     <div id="threejs-canvas-container"></div>
     <div class="overlay-dark"></div>
 
@@ -191,86 +293,45 @@
     <script>
         let scene, camera, renderer, flyingCards = [];
 
-        // MOTOR STARK: Creador de Texturas de Tarjeta en Vivo
         function createCardTexture(type) {
             const canvas = document.createElement('canvas');
-            canvas.width = 1024;
-            canvas.height = 640;
+            canvas.width = 1024; canvas.height = 640;
             const ctx = canvas.getContext('2d');
 
-            // 1. Color Base Metálico
             let baseColor, textColor, brandText;
-            if (type === 'black') {
-                baseColor = '#111111'; textColor = '#777777'; brandText = 'EXPRESS VIP';
-            } else if (type === 'gold') {
-                baseColor = '#d4af37'; textColor = '#ffffff'; brandText = 'PREMIUM EMV';
-            } else {
-                baseColor = '#002e5f'; textColor = '#dddddd'; brandText = 'WORLD ELITE';
-            }
+            if (type === 'black') { baseColor = '#111111'; textColor = '#777777'; brandText = 'EXPRESS VIP'; } 
+            else if (type === 'gold') { baseColor = '#d4af37'; textColor = '#ffffff'; brandText = 'PREMIUM EMV'; } 
+            else { baseColor = '#002e5f'; textColor = '#dddddd'; brandText = 'WORLD ELITE'; }
 
-            // Fondo con ligero gradiente para volumen
             const grad = ctx.createLinearGradient(0, 0, 1024, 640);
-            grad.addColorStop(0, baseColor);
-            grad.addColorStop(1, '#000000');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 1024, 640);
+            grad.addColorStop(0, baseColor); grad.addColorStop(1, '#000000');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, 1024, 640);
 
-            // 2. Chip EMV
-            ctx.fillStyle = '#e5c158'; 
-            ctx.beginPath();
-            ctx.roundRect(100, 260, 140, 110, 15);
-            ctx.fill();
-            // Líneas del chip
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(100, 290); ctx.lineTo(140, 290);
-            ctx.moveTo(100, 330); ctx.lineTo(140, 330);
-            ctx.moveTo(240, 290); ctx.lineTo(200, 290);
-            ctx.moveTo(240, 330); ctx.lineTo(200, 330);
-            ctx.stroke();
+            ctx.fillStyle = '#e5c158'; ctx.beginPath(); ctx.roundRect(100, 260, 140, 110, 15); ctx.fill();
+            ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(100, 290); ctx.lineTo(140, 290); ctx.moveTo(100, 330); ctx.lineTo(140, 330);
+            ctx.moveTo(240, 290); ctx.lineTo(200, 290); ctx.moveTo(240, 330); ctx.lineTo(200, 330); ctx.stroke();
 
-            // 3. Símbolo NFC
-            ctx.strokeStyle = textColor;
-            ctx.lineWidth = 4;
+            ctx.strokeStyle = textColor; ctx.lineWidth = 4;
             ctx.beginPath(); ctx.arc(280, 315, 10, -Math.PI/4, Math.PI/4); ctx.stroke();
             ctx.beginPath(); ctx.arc(270, 315, 20, -Math.PI/4, Math.PI/4); ctx.stroke();
             ctx.beginPath(); ctx.arc(260, 315, 30, -Math.PI/4, Math.PI/4); ctx.stroke();
 
-            // 4. Números de Tarjeta (Relieve)
-            ctx.fillStyle = textColor;
-            ctx.font = 'bold 65px monospace';
-            ctx.shadowColor = 'rgba(0,0,0,0.8)';
-            ctx.shadowBlur = 4;
-            ctx.shadowOffsetX = 2;
-            ctx.shadowOffsetY = 2;
+            ctx.fillStyle = textColor; ctx.font = 'bold 65px monospace';
+            ctx.shadowColor = 'rgba(0,0,0,0.8)'; ctx.shadowBlur = 4; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
             ctx.fillText('4230  1234  5678  9010', 100, 480);
 
-            // 5. Nombre y Fecha
             ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
-            ctx.font = '30px sans-serif';
-            ctx.fillText('02/29', 450, 530);
-            ctx.font = '35px monospace';
-            ctx.fillText('BS PREMIUM MEMBER', 100, 570);
+            ctx.font = '30px sans-serif'; ctx.fillText('02/29', 450, 530);
+            ctx.font = '35px monospace'; ctx.fillText('BS PREMIUM MEMBER', 100, 570);
 
-            // 6. Franquicia / Logo
-            ctx.font = 'italic bold 50px serif';
-            ctx.textAlign = 'right';
-            
+            ctx.font = 'italic bold 50px serif'; ctx.textAlign = 'right';
             if (type === 'blue') {
-                // Estilo Mastercard (Círculos)
-                ctx.fillStyle = 'rgba(235, 0, 27, 0.9)';
-                ctx.beginPath(); ctx.arc(860, 530, 45, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = 'rgba(247, 158, 27, 0.9)';
-                ctx.beginPath(); ctx.arc(920, 530, 45, 0, Math.PI*2); ctx.fill();
-            } else {
-                ctx.fillText(brandText, 950, 560);
-            }
+                ctx.fillStyle = 'rgba(235, 0, 27, 0.9)'; ctx.beginPath(); ctx.arc(860, 530, 45, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = 'rgba(247, 158, 27, 0.9)'; ctx.beginPath(); ctx.arc(920, 530, 45, 0, Math.PI*2); ctx.fill();
+            } else { ctx.fillText(brandText, 950, 560); }
 
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.anisotropy = 16;
-            return texture;
+            const texture = new THREE.CanvasTexture(canvas); texture.anisotropy = 16; return texture;
         }
 
         function init3D() {
@@ -283,24 +344,13 @@
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('threejs-canvas-container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.4); 
-            scene.add(ambientLight);
-
-            const pointLight = new THREE.PointLight(0xd4af37, 3, 150); 
-            pointLight.position.set(15, 15, 15);
-            scene.add(pointLight);
-
-            const fillLight = new THREE.PointLight(0xffffff, 1.5, 100); 
-            fillLight.position.set(-15, -10, 15);
-            scene.add(fillLight);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.4); scene.add(ambientLight);
+            const pointLight = new THREE.PointLight(0xd4af37, 3, 150); pointLight.position.set(15, 15, 15); scene.add(pointLight);
+            const fillLight = new THREE.PointLight(0xffffff, 1.5, 100); fillLight.position.set(-15, -10, 15); scene.add(fillLight);
 
             const geometry = new THREE.PlaneGeometry(8.5, 5.3); 
             
-            // INYECTAMOS LAS TEXTURAS REALISTAS GENERADAS
-            const texBlack = createCardTexture('black');
-            const texGold = createCardTexture('gold');
-            const texBlue = createCardTexture('blue');
-
+            const texBlack = createCardTexture('black'); const texGold = createCardTexture('gold'); const texBlue = createCardTexture('blue');
             const materials = [
                 new THREE.MeshStandardMaterial({ map: texBlack, metalness: 0.9, roughness: 0.15, side: THREE.DoubleSide }), 
                 new THREE.MeshStandardMaterial({ map: texGold, metalness: 0.8, roughness: 0.1, side: THREE.DoubleSide }), 
@@ -319,21 +369,26 @@
         function animate() {
             requestAnimationFrame(animate);
             flyingCards.forEach(card => {
-                card.mesh.position.y += card.speed;
-                card.mesh.rotation.x += card.rot;
-                card.mesh.rotation.y += card.rot;
+                card.mesh.position.y += card.speed; card.mesh.rotation.x += card.rot; card.mesh.rotation.y += card.rot;
                 if (card.mesh.position.y > 60) card.mesh.position.y = -60;
             });
             renderer.render(scene, camera);
         }
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
 
-        init3D(); animate();
+        // INICIALIZACIÓN SECUENCIAL (ESPERA AL LOADER)
+        window.addEventListener('load', () => {
+            init3D(); 
+            animate();
+            
+            setTimeout(() => {
+                const loader = document.getElementById('stark-loader');
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                setTimeout(() => { loader.remove(); }, 1000);
+            }, 3000);
+        });
 
         // ==========================================
         // LÓGICA DE PORTAFOLIO VIP (FIREBASE)
