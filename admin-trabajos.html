@@ -18,6 +18,8 @@
             }
         }
     </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-tm-black text-white min-h-screen p-8 font-sans selection:bg-tm-gold selection:text-black">
 
@@ -26,9 +28,9 @@
         <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
             <div>
                 <h1 class="text-3xl font-light tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Portafolio</span></h1>
-                <p class="text-gray-400 text-xs tracking-[0.2em] mt-2">Bóveda de Trabajos Reales (Fotos)</p>
+                <p class="text-gray-400 text-xs tracking-[0.2em] mt-2">Bóveda de Trabajos Reales (Firebase)</p>
             </div>
-            <a href="index.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full">
+            <a href="index.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
                 Ver Página Principal
             </a>
         </div>
@@ -43,13 +45,18 @@
                 </div>
 
                 <button onclick="saveWork()" class="w-full bg-tm-gold text-black font-bold py-4 rounded uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-                    Publicar en la Página
+                    Publicar en Servidor Global
                 </button>
-                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden"></p>
+                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden font-bold"></p>
             </div>
 
             <div>
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold mb-6">2. Galería Pública</h2>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold mb-6 flex justify-between">
+                    2. Galería Pública
+                    <span class="text-[8px] text-green-500 animate-pulse flex items-center gap-1">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span> Online
+                    </span>
+                </h2>
                 <div id="worksList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
                     </div>
             </div>
@@ -57,70 +64,57 @@
     </div>
 
     <script>
+        // INICIALIZACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA",
+            authDomain: "bspremium-8d5db.firebaseapp.com",
+            projectId: "bspremium-8d5db",
+            storageBucket: "bspremium-8d5db.firebasestorage.app",
+            messagingSenderId: "705566703093",
+            appId: "1:705566703093:web:177729e3c86d90744674bc"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         const workImageInput = document.getElementById('workImage');
         const worksList = document.getElementById('worksList');
         const statusMsg = document.getElementById('statusMsg');
 
-        // Intercomunicador exclusivo para el portafolio
-        const syncChannel = new BroadcastChannel('bs_portfolio_sync');
-
-        // Nueva Base de Datos solo para el Portafolio (BS_Portfolio)
-        let db;
-        const request = indexedDB.open("BS_Portfolio", 1);
-
-        request.onupgradeneeded = function(event) {
-            db = event.target.result;
-            if (!db.objectStoreNames.contains("works")) {
-                db.createObjectStore("works", { keyPath: "id", autoIncrement: true });
+        // LECTURA EN TIEMPO REAL DESDE FIREBASE (COLECCIÓN PORTFOLIO)
+        db.collection("portfolio").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            worksList.innerHTML = ''; 
+            if(snapshot.empty) {
+                worksList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase">No hay fotos publicadas en la nube.</p>';
+                return;
             }
-        };
+            snapshot.forEach((doc) => {
+                const work = doc.data();
+                const workId = doc.id;
 
-        request.onsuccess = function(event) {
-            db = event.target.result;
-            loadWorks();
-        };
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between bg-black p-3 border border-gray-800 rounded-lg hover:border-tm-gold/30 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        <img src="${work.image}" class="w-16 h-10 object-cover rounded border border-gray-700" alt="foto">
+                        <span class="text-[9px] text-gray-400 uppercase tracking-widest truncate w-24">Imagen ID: ${workId.substring(0,5)}...</span>
+                    </div>
+                    <button onclick="deleteWork('${workId}')" class="text-red-500 hover:text-red-400 text-[10px] font-bold uppercase ml-2 px-3 py-2 border border-red-900/50 bg-red-900/10 hover:bg-red-900/40 rounded transition-colors">
+                        Eliminar
+                    </button>
+                `;
+                worksList.appendChild(item);
+            });
+        });
 
-        function loadWorks() {
-            const transaction = db.transaction(["works"], "readonly");
-            const store = transaction.objectStore("works");
-            const getAllRequest = store.getAll();
-
-            getAllRequest.onsuccess = function() {
-                const savedWorks = getAllRequest.result;
-                worksList.innerHTML = ''; 
-
-                if(savedWorks.length === 0) {
-                    worksList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase">No hay fotos publicadas.</p>';
-                    return;
-                }
-
-                // Mostrar de la más nueva a la más vieja
-                savedWorks.reverse().forEach((work) => {
-                    const item = document.createElement('div');
-                    item.className = 'flex items-center justify-between bg-black p-3 border border-gray-800 rounded-lg';
-                    item.innerHTML = `
-                        <div class="flex items-center gap-4 overflow-hidden">
-                            <img src="${work.image}" class="w-16 h-10 object-cover rounded border border-gray-700" alt="foto">
-                            <span class="text-[9px] text-gray-400 uppercase tracking-widest">Trabajo #${work.id}</span>
-                        </div>
-                        <button onclick="deleteWork(${work.id})" class="text-red-500 hover:text-red-400 text-[10px] font-bold uppercase ml-2 px-3 py-2 border border-red-900/50 bg-red-900/10 rounded transition-colors">
-                            Eliminar
-                        </button>
-                    `;
-                    worksList.appendChild(item);
-                });
-            };
-        }
-
+        // MOTOR DE COMPRESIÓN Y SUBIDA A FIREBASE
         function saveWork() {
             const file = workImageInput.files[0];
-
             if(!file) {
                 showStatus('Selecciona una foto, Jefe.', 'text-red-500');
                 return;
             }
 
-            showStatus('Optimizando foto...', 'text-gray-400');
+            showStatus('Optimizando y subiendo al satélite...', 'text-gray-400');
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -129,7 +123,6 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Compresión para fotos (Máximo 1000px)
                     const MAX_SIZE = 1000; 
                     let width = img.width;
                     let height = img.height;
@@ -144,33 +137,31 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Guardamos como JPEG con calidad 85% para fotos reales
                     const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
 
-                    const transaction = db.transaction(["works"], "readwrite");
-                    const store = transaction.objectStore("works");
-                    const addRequest = store.add({ image: compressedBase64 });
-
-                    addRequest.onsuccess = function() {
+                    db.collection("portfolio").add({
+                        image: compressedBase64,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
                         workImageInput.value = '';
                         showStatus('Foto publicada en vivo.', 'text-tm-gold');
-                        loadWorks();
-                        syncChannel.postMessage('actualizar_portfolio');
-                    };
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                        showStatus('Error en la transmisión. Revisa consola.', 'text-red-500');
+                    });
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file); 
         }
 
+        // BORRADO EN FIREBASE
         function deleteWork(id) {
-            const transaction = db.transaction(["works"], "readwrite");
-            const store = transaction.objectStore("works");
-            store.delete(id);
-            transaction.oncomplete = function() {
-                loadWorks();
-                syncChannel.postMessage('actualizar_portfolio');
-            };
+            if(confirm("¿Seguro que quieres borrar esta foto de todos los servidores globales?")) {
+                db.collection("portfolio").doc(id).delete().catch((error) => {
+                    console.error("Error removing document: ", error);
+                });
+            }
         }
 
         function showStatus(msg, colorClass) {

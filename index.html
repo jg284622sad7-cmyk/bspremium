@@ -27,6 +27,9 @@
             }
         }
     </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
     <style>
         body { background-color: #030303; color: white; margin: 0; overflow-x: hidden; }
 
@@ -84,12 +87,12 @@
     <div class="overlay-dark"></div>
 
     <nav class="fixed top-0 w-full z-50 glass-nav px-8 py-5 flex flex-col items-center justify-center gap-4 transition-all duration-300">
-        
         <div class="flex flex-col items-center justify-center">
             
             <div class="w-12 h-12 flex items-center justify-center bg-black/40 rounded-full border border-tm-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)] mb-2">
                 <svg class="w-6 h-6 text-tm-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
             </div>
+            
             <div class="text-center">
                 <span class="text-tm-gold font-playfair font-bold text-xl md:text-2xl tracking-widest leading-none">BS <span class="text-white text-[10px] md:text-xs font-sans tracking-[0.4em] ml-1">PREMIUM</span></span>
             </div>
@@ -112,8 +115,6 @@
     <main class="relative z-10 pt-32 md:pt-40">
         <section id="inicio" class="min-h-[85vh] flex flex-col justify-center items-center px-6">
             
-            <div class="mb-6 opacity-90 scale-110 flex justify-center items-center">
-                </div>
             <div class="glass-panel rounded-[2.5rem] p-8 md:p-16 max-w-5xl w-full text-center fade-in">
                 <h2 class="text-tm-gold tracking-[0.5em] uppercase text-xs mb-6 font-bold drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]">El Estatus No Se Dice</h2>
                 
@@ -173,7 +174,7 @@
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-16">
                     <h2 class="font-playfair text-4xl text-white mb-4 italic">Obras Maestras</h2>
-                    <p class="text-tm-gold uppercase tracking-[0.3em] text-[10px]">Trabajos Realizados para Clientes VIP</p>
+                    <p class="text-tm-gold uppercase tracking-[0.3em] text-[10px] font-bold">Trabajos Realizados para Clientes VIP</p>
                 </div>
 
                 <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -207,13 +208,12 @@
             pointLight.position.set(10, 10, 10);
             scene.add(pointLight);
 
-            const geometry = new THREE.PlaneGeometry(8, 5); // Tamaño tarjetas
+            const geometry = new THREE.PlaneGeometry(8, 5); 
             
-            // Materiales de tarjetas voladoras
             const materials = [
-                new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.2, side: THREE.DoubleSide }), // Negro/Amex
-                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 1.0, roughness: 0.1, side: THREE.DoubleSide }), // Oro
-                new THREE.MeshStandardMaterial({ color: 0x002e5f, metalness: 0.8, roughness: 0.3, side: THREE.DoubleSide })  // Azul/Bancolombia
+                new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.2, side: THREE.DoubleSide }), 
+                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 1.0, roughness: 0.1, side: THREE.DoubleSide }), 
+                new THREE.MeshStandardMaterial({ color: 0x002e5f, metalness: 0.8, roughness: 0.3, side: THREE.DoubleSide })  
             ];
 
             for (let i = 0; i < 20; i++) {
@@ -244,25 +244,35 @@
 
         init3D(); animate();
 
-        // LÓGICA DE PORTAFOLIO (INDEXEDDB)
-        const portfolioGrid = document.getElementById('portfolioGrid');
-        const dbReq = indexedDB.open("BS_Portfolio", 1);
-        dbReq.onsuccess = (e) => {
-            const db = e.target.result;
-            if(db.objectStoreNames.contains("works")) {
-                const store = db.transaction("works", "readonly").objectStore("works");
-                store.getAll().onsuccess = (ev) => {
-                    const works = ev.target.result;
-                    if (works.length === 0) portfolioGrid.innerHTML = "<p class='col-span-full text-gray-600 text-xs tracking-widest'>GALERÍA EN ACTUALIZACIÓN...</p>";
-                    works.reverse().forEach(w => {
-                        const div = document.createElement('div');
-                        div.className = "glass-panel rounded-2xl overflow-hidden h-64 hover:border-tm-gold transition-all duration-500 group";
-                        div.innerHTML = `<img src="${w.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80">`;
-                        portfolioGrid.appendChild(div);
-                    });
-                };
-            }
+        // ==========================================
+        // LÓGICA DE PORTAFOLIO VIP (FIREBASE)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA",
+            authDomain: "bspremium-8d5db.firebaseapp.com",
+            projectId: "bspremium-8d5db",
+            storageBucket: "bspremium-8d5db.firebasestorage.app",
+            messagingSenderId: "705566703093",
+            appId: "1:705566703093:web:177729e3c86d90744674bc"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const portfolioGrid = document.getElementById('portfolioGrid');
+
+        db.collection("portfolio").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            portfolioGrid.innerHTML = ''; 
+            if(snapshot.empty) {
+                portfolioGrid.innerHTML = "<p class='col-span-full text-gray-500 text-[10px] tracking-widest uppercase text-center py-10'>Galería en actualización desde la central.</p>";
+                return;
+            }
+            snapshot.forEach((doc) => {
+                const work = doc.data();
+                const div = document.createElement('div');
+                div.className = "glass-panel rounded-2xl overflow-hidden h-64 hover:border-tm-gold transition-all duration-500 group border border-gray-800";
+                div.innerHTML = `<img src="${work.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-90">`;
+                portfolioGrid.appendChild(div);
+            });
+        });
     </script>
 </body>
 </html>
