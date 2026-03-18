@@ -35,7 +35,7 @@
         <div class="flex items-center justify-between mb-10 border-b border-gray-800 pb-6">
             <div>
                 <h1 class="text-3xl font-playfair tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Designs</span></h1>
-                <p class="text-gray-400 text-[10px] tracking-[0.2em] mt-2 uppercase font-bold">Consola de Administración en la Nube</p>
+                <p class="text-gray-400 text-[10px] tracking-[0.2em] mt-2 uppercase font-bold">Base de Datos Central: FIREBASE</p>
             </div>
             <a href="ventas.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
                 Ver Tienda en Vivo
@@ -44,7 +44,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div class="space-y-6">
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Diseño a la Nube</h2>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Diseño (PNG Transparente)</h2>
                 
                 <div class="space-y-3">
                     <label class="text-[10px] tracking-widest uppercase text-gray-400">Nombre del Diseño</label>
@@ -52,14 +52,14 @@
                 </div>
 
                 <div class="space-y-3">
-                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen (Fondo transparente)</label>
-                    <input type="file" id="designImage" accept="image/*" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded-lg cursor-pointer">
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen</label>
+                    <input type="file" id="designImage" accept="image/png, image/jpeg" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded-lg cursor-pointer">
                 </div>
 
                 <button onclick="saveDesign()" class="w-full bg-tm-gold text-black font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1">
-                    Publicar en Servidor Global
+                    Publicar en Servidor
                 </button>
-                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden text-center"></p>
+                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden text-center font-bold"></p>
             </div>
 
             <div>
@@ -70,7 +70,8 @@
                     </span>
                 </h2>
                 <div id="designsList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    </div>
+                    <p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10 animate-pulse">Sincronizando...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -85,7 +86,8 @@
             messagingSenderId: "705566703093",
             appId: "1:705566703093:web:177729e3c86d90744674bc"
         };
-        firebase.initializeApp(firebaseConfig);
+        
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
         const designNameInput = document.getElementById('designName');
@@ -102,7 +104,7 @@
             }
             snapshot.forEach((doc) => {
                 const design = doc.data();
-                const designId = doc.id; // ID único de Firebase
+                const designId = doc.id; 
 
                 const item = document.createElement('div');
                 item.className = 'flex items-center justify-between bg-[#0a0a0a] p-3 border border-gray-800 rounded-xl hover:border-tm-gold/30 transition-colors';
@@ -119,9 +121,11 @@
                 `;
                 designsList.appendChild(item);
             });
+        }, (error) => {
+            showStatus("Error conectando a Firebase: Revisa permisos.", "text-red-500");
         });
 
-        // MOTOR DE COMPRESIÓN Y SUBIDA A FIREBASE
+        // MOTOR DE COMPRESIÓN AGRESIVA (MAX 600px para evitar límite 1MB)
         function saveDesign() {
             const name = designNameInput.value.trim().toUpperCase();
             const file = designImageInput.files[0];
@@ -131,7 +135,7 @@
                 return;
             }
 
-            showStatus('Optimizando y subiendo al satélite...', 'text-gray-400');
+            showStatus('Comprimiendo y subiendo al satélite...', 'text-tm-gold');
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -140,8 +144,8 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Compresión de tamaño (Mantenemos los vectores de corte CNC)
-                    const MAX_SIZE = 800; 
+                    // COMPRESIÓN STARK: Límite estricto de 500px para PNGs
+                    const MAX_SIZE = 500; 
                     let width = img.width;
                     let height = img.height;
 
@@ -155,10 +159,17 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Guardamos como PNG para mantener la transparencia
+                    // Forzamos la calidad al comprimir
                     const compressedBase64 = canvas.toDataURL('image/png');
 
-                    // Guardamos en Firebase Firestore
+                    // Verificar peso aproximado
+                    const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
+                    if(sizeInMB > 1.0) {
+                        showStatus('La imagen sigue siendo muy pesada. Usa una más simple.', 'text-red-500');
+                        return;
+                    }
+
+                    // GUARDADO 100% FIREBASE
                     db.collection("designs").add({
                         name: name,
                         image: compressedBase64,
@@ -166,10 +177,10 @@
                     }).then(() => {
                         designNameInput.value = '';
                         designImageInput.value = '';
-                        showStatus('Transmisión exitosa. Diseño en vivo.', 'text-tm-gold');
+                        showStatus('DISEÑO GUARDADO EN LA NUBE.', 'text-green-500');
                     }).catch((error) => {
-                        console.error("Error writing document: ", error);
-                        showStatus('Error en la transmisión. Revisa la consola.', 'text-red-500');
+                        console.error("Error Firebase: ", error);
+                        showStatus('Error en Firebase (Revisa Reglas/Consola).', 'text-red-500');
                     });
                 };
                 img.src = e.target.result;
@@ -181,9 +192,9 @@
         function deleteDesign(id) {
             if(confirm("¿Seguro que quieres borrar este diseño de todos los servidores globales?")) {
                 db.collection("designs").doc(id).delete().then(() => {
-                    console.log("Diseño eliminado de la base de datos central.");
+                    showStatus("Eliminado de la nube.", "text-red-500");
                 }).catch((error) => {
-                    console.error("Error removing document: ", error);
+                    console.error("Error Firebase: ", error);
                 });
             }
         }
@@ -191,7 +202,8 @@
         function showStatus(msg, colorClass) {
             statusMsg.textContent = msg;
             statusMsg.className = `text-[10px] tracking-widest uppercase mt-3 block text-center font-bold ${colorClass}`;
-            setTimeout(() => { statusMsg.classList.add('hidden') }, 3500);
+            statusMsg.classList.remove('hidden');
+            setTimeout(() => { statusMsg.classList.add('hidden') }, 4000);
         }
     </script>
 </body>

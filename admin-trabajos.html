@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BS Admin | Trabajos Realizados</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,6 +15,10 @@
                         'tm-gold': '#D4AF37',
                         'tm-black': '#0a0a0a',
                         'tm-gray': '#111111',
+                    },
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                        'playfair': ['"Playfair Display"', 'serif'],
                     }
                 }
             }
@@ -23,31 +29,31 @@
 </head>
 <body class="bg-tm-black text-white min-h-screen p-8 font-sans selection:bg-tm-gold selection:text-black">
 
-    <div class="max-w-4xl mx-auto bg-tm-gray p-8 rounded-3xl border border-tm-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.05)]">
+    <div class="max-w-4xl mx-auto bg-tm-gray p-8 rounded-3xl border border-tm-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.05)] mt-10">
         
         <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
             <div>
-                <h1 class="text-3xl font-light tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Portafolio</span></h1>
-                <p class="text-gray-400 text-xs tracking-[0.2em] mt-2">Bóveda de Trabajos Reales (Firebase)</p>
+                <h1 class="text-3xl font-playfair tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Portafolio</span></h1>
+                <p class="text-gray-400 text-xs tracking-[0.2em] mt-2 font-bold uppercase">Base de Datos Central: FIREBASE</p>
             </div>
             <a href="index.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
-                Ver Página Principal
+                Ver Inicio en Vivo
             </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div class="space-y-6">
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Foto Real</h2>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Foto Real (JPG/PNG)</h2>
                 
                 <div class="space-y-3">
-                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen (Foto de tarjeta)</label>
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen (Foto de la tarjeta)</label>
                     <input type="file" id="workImage" accept="image/*" class="w-full bg-black border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded">
                 </div>
 
-                <button onclick="saveWork()" class="w-full bg-tm-gold text-black font-bold py-4 rounded uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                <button onclick="saveWork()" class="w-full bg-tm-gold text-black font-bold py-4 rounded uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1">
                     Publicar en Servidor Global
                 </button>
-                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden font-bold"></p>
+                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden font-bold text-center"></p>
             </div>
 
             <div>
@@ -58,7 +64,8 @@
                     </span>
                 </h2>
                 <div id="worksList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    </div>
+                    <p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10 animate-pulse">Sincronizando...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -73,18 +80,18 @@
             messagingSenderId: "705566703093",
             appId: "1:705566703093:web:177729e3c86d90744674bc"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
         const workImageInput = document.getElementById('workImage');
         const worksList = document.getElementById('worksList');
         const statusMsg = document.getElementById('statusMsg');
 
-        // LECTURA EN TIEMPO REAL DESDE FIREBASE (COLECCIÓN PORTFOLIO)
+        // LECTURA EN TIEMPO REAL DESDE FIREBASE
         db.collection("portfolio").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             worksList.innerHTML = ''; 
             if(snapshot.empty) {
-                worksList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase">No hay fotos publicadas en la nube.</p>';
+                worksList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10">No hay fotos publicadas en la nube.</p>';
                 return;
             }
             snapshot.forEach((doc) => {
@@ -96,7 +103,7 @@
                 item.innerHTML = `
                     <div class="flex items-center gap-4 overflow-hidden">
                         <img src="${work.image}" class="w-16 h-10 object-cover rounded border border-gray-700" alt="foto">
-                        <span class="text-[9px] text-gray-400 uppercase tracking-widest truncate w-24">Imagen ID: ${workId.substring(0,5)}...</span>
+                        <span class="text-[9px] text-gray-400 uppercase tracking-widest truncate w-24">ID: ${workId.substring(0,6)}</span>
                     </div>
                     <button onclick="deleteWork('${workId}')" class="text-red-500 hover:text-red-400 text-[10px] font-bold uppercase ml-2 px-3 py-2 border border-red-900/50 bg-red-900/10 hover:bg-red-900/40 rounded transition-colors">
                         Eliminar
@@ -104,9 +111,11 @@
                 `;
                 worksList.appendChild(item);
             });
+        }, (error) => {
+            showStatus("Error conectando a Firebase: Revisa permisos.", "text-red-500");
         });
 
-        // MOTOR DE COMPRESIÓN Y SUBIDA A FIREBASE
+        // COMPRESIÓN AGRESIVA (Calidad 0.7) PARA QUE NUNCA FALLE FIREBASE
         function saveWork() {
             const file = workImageInput.files[0];
             if(!file) {
@@ -114,7 +123,7 @@
                 return;
             }
 
-            showStatus('Optimizando y subiendo al satélite...', 'text-gray-400');
+            showStatus('Comprimiendo y subiendo al satélite...', 'text-tm-gold');
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -123,7 +132,8 @@
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    const MAX_SIZE = 1000; 
+                    // Límite estricto para fotos Reales
+                    const MAX_SIZE = 800; 
                     let width = img.width;
                     let height = img.height;
 
@@ -137,17 +147,25 @@
                     canvas.height = height;
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                    // Guardar como JPEG con calidad 70%
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
 
+                    const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
+                    if(sizeInMB > 1.0) {
+                        showStatus('Foto demasiado compleja, intenta recortarla.', 'text-red-500');
+                        return;
+                    }
+
+                    // GUARDADO 100% FIREBASE
                     db.collection("portfolio").add({
                         image: compressedBase64,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     }).then(() => {
                         workImageInput.value = '';
-                        showStatus('Foto publicada en vivo.', 'text-tm-gold');
+                        showStatus('FOTO GUARDADA EN LA NUBE.', 'text-green-500');
                     }).catch((error) => {
-                        console.error("Error writing document: ", error);
-                        showStatus('Error en la transmisión. Revisa consola.', 'text-red-500');
+                        console.error("Error Firebase: ", error);
+                        showStatus('Error de transmisión (Revisa consola).', 'text-red-500');
                     });
                 };
                 img.src = e.target.result;
@@ -155,19 +173,22 @@
             reader.readAsDataURL(file); 
         }
 
-        // BORRADO EN FIREBASE
+        // BORRADO GLOBAL
         function deleteWork(id) {
             if(confirm("¿Seguro que quieres borrar esta foto de todos los servidores globales?")) {
-                db.collection("portfolio").doc(id).delete().catch((error) => {
-                    console.error("Error removing document: ", error);
+                db.collection("portfolio").doc(id).delete().then(() => {
+                    showStatus("Eliminado de la nube.", "text-red-500");
+                }).catch((error) => {
+                    console.error("Error Firebase: ", error);
                 });
             }
         }
 
         function showStatus(msg, colorClass) {
             statusMsg.textContent = msg;
-            statusMsg.className = `text-[10px] tracking-widest uppercase mt-3 block ${colorClass}`;
-            setTimeout(() => { statusMsg.classList.add('hidden') }, 3000);
+            statusMsg.className = `text-[10px] tracking-widest uppercase mt-3 block ${colorClass} text-center font-bold`;
+            statusMsg.classList.remove('hidden');
+            setTimeout(() => { statusMsg.classList.add('hidden') }, 4000);
         }
     </script>
 </body>
