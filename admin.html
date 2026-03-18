@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BS Admin | Bóveda de Diseños</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tm-gold': '#D4AF37',
+                        'tm-black': '#050505',
+                        'tm-gray': '#111111',
+                    },
+                    fontFamily: {
+                        'sans': ['Montserrat', 'sans-serif'],
+                        'playfair': ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-tm-black text-white min-h-screen p-8 font-sans selection:bg-tm-gold selection:text-black">
+
+    <div class="max-w-4xl mx-auto bg-tm-gray p-8 rounded-[2rem] border border-tm-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.05)] mt-10">
+        
+        <div class="flex items-center justify-between mb-10 border-b border-gray-800 pb-6">
+            <div>
+                <h1 class="text-3xl font-playfair tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Designs</span></h1>
+                <p class="text-gray-400 text-[10px] tracking-[0.2em] mt-2 uppercase font-bold">Consola de Administración en la Nube</p>
+            </div>
+            <a href="ventas.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
+                Ver Tienda en Vivo
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="space-y-6">
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Diseño a la Nube</h2>
+                
+                <div class="space-y-3">
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Nombre del Diseño</label>
+                    <input type="text" id="designName" placeholder="Ej: TUPAC EDICIÓN LIMITADA" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs uppercase tracking-widest rounded-lg">
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen (Fondo transparente)</label>
+                    <input type="file" id="designImage" accept="image/*" class="w-full bg-[#0a0a0a] border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded-lg cursor-pointer">
+                </div>
+
+                <button onclick="saveDesign()" class="w-full bg-tm-gold text-black font-bold py-4 rounded-xl uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1">
+                    Publicar en Servidor Global
+                </button>
+                <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden text-center"></p>
+            </div>
+
+            <div>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold mb-6 flex justify-between">
+                    2. Bóveda en Vivo
+                    <span class="text-[8px] text-green-500 animate-pulse flex items-center gap-1">
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span> Conectado
+                    </span>
+                </h2>
+                <div id="designsList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // INICIALIZACIÓN DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA",
+            authDomain: "bspremium-8d5db.firebaseapp.com",
+            projectId: "bspremium-8d5db",
+            storageBucket: "bspremium-8d5db.firebasestorage.app",
+            messagingSenderId: "705566703093",
+            appId: "1:705566703093:web:177729e3c86d90744674bc"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const designNameInput = document.getElementById('designName');
+        const designImageInput = document.getElementById('designImage');
+        const designsList = document.getElementById('designsList');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // LECTURA EN TIEMPO REAL DESDE FIREBASE
+        db.collection("designs").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            designsList.innerHTML = ''; 
+            if(snapshot.empty) {
+                designsList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10">Bóveda vacía.</p>';
+                return;
+            }
+            snapshot.forEach((doc) => {
+                const design = doc.data();
+                const designId = doc.id; // ID único de Firebase
+
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between bg-[#0a0a0a] p-3 border border-gray-800 rounded-xl hover:border-tm-gold/30 transition-colors';
+                item.innerHTML = `
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        <div class="w-12 h-12 bg-black border border-gray-700 rounded-lg p-1 flex items-center justify-center">
+                            <img src="${design.image}" class="max-w-full max-h-full filter invert opacity-90" alt="foto">
+                        </div>
+                        <span class="text-[10px] text-white uppercase tracking-widest font-bold truncate">${design.name}</span>
+                    </div>
+                    <button onclick="deleteDesign('${designId}')" class="text-red-500 hover:text-white text-[9px] font-bold uppercase ml-2 px-3 py-2 border border-red-900/50 bg-red-900/20 hover:bg-red-600 rounded-lg transition-all">
+                        Borrar
+                    </button>
+                `;
+                designsList.appendChild(item);
+            });
+        });
+
+        // MOTOR DE COMPRESIÓN Y SUBIDA A FIREBASE
+        function saveDesign() {
+            const name = designNameInput.value.trim().toUpperCase();
+            const file = designImageInput.files[0];
+
+            if(!name || !file) {
+                showStatus('Faltan datos o imagen, Jefe.', 'text-red-500');
+                return;
+            }
+
+            showStatus('Optimizando y subiendo al satélite...', 'text-gray-400');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Compresión de tamaño (Mantenemos los vectores de corte CNC)
+                    const MAX_SIZE = 800; 
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                    } else {
+                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Guardamos como PNG para mantener la transparencia
+                    const compressedBase64 = canvas.toDataURL('image/png');
+
+                    // Guardamos en Firebase Firestore
+                    db.collection("designs").add({
+                        name: name,
+                        image: compressedBase64,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    }).then(() => {
+                        designNameInput.value = '';
+                        designImageInput.value = '';
+                        showStatus('Transmisión exitosa. Diseño en vivo.', 'text-tm-gold');
+                    }).catch((error) => {
+                        console.error("Error writing document: ", error);
+                        showStatus('Error en la transmisión. Revisa la consola.', 'text-red-500');
+                    });
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file); 
+        }
+
+        // BORRADO EN FIREBASE
+        function deleteDesign(id) {
+            if(confirm("¿Seguro que quieres borrar este diseño de todos los servidores globales?")) {
+                db.collection("designs").doc(id).delete().then(() => {
+                    console.log("Diseño eliminado de la base de datos central.");
+                }).catch((error) => {
+                    console.error("Error removing document: ", error);
+                });
+            }
+        }
+
+        function showStatus(msg, colorClass) {
+            statusMsg.textContent = msg;
+            statusMsg.className = `text-[10px] tracking-widest uppercase mt-3 block text-center font-bold ${colorClass}`;
+            setTimeout(() => { statusMsg.classList.add('hidden') }, 3500);
+        }
+    </script>
+</body>
+</html>

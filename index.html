@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BS Premium Cards | El Estatus del Metal</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tm-gold': '#D4AF37', 
+                        'tm-gold-light': '#F3E5AB', 
+                        'tm-black': '#050505', 
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'sans': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #030303; color: white; margin: 0; overflow-x: hidden; }
+
+        #threejs-canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; 
+            pointer-events: none; opacity: 0.9; 
+        }
+
+        .overlay-dark {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+            z-index: -1; pointer-events: none;
+        }
+
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, #b38728, #fcf6ba, #bf953f, #fcf6ba, #b38728);
+            background-size: 200% auto;
+            color: black;
+            animation: shine 4s linear infinite;
+            transition: 0.5s;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .btn-action:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.7);
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .fade-in { animation: fadeIn 1.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans">
+
+    <div id="threejs-canvas-container"></div>
+    <div class="overlay-dark"></div>
+
+    <nav class="fixed top-0 w-full z-50 glass-nav px-8 py-5 flex flex-col items-center justify-center gap-4 transition-all duration-300">
+        
+        <div class="flex flex-col items-center justify-center">
+            
+            <div class="w-12 h-12 flex items-center justify-center bg-black/40 rounded-full border border-tm-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)] mb-2">
+                <svg class="w-6 h-6 text-tm-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
+            </div>
+            <div class="text-center">
+                <span class="text-tm-gold font-playfair font-bold text-xl md:text-2xl tracking-widest leading-none">BS <span class="text-white text-[10px] md:text-xs font-sans tracking-[0.4em] ml-1">PREMIUM</span></span>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-4 md:gap-8 items-center justify-center mt-1">
+            <a href="#inicio" class="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-400 hover:text-tm-gold transition-colors font-bold">Inicio</a>
+            <span class="text-gray-700 text-xs hidden md:inline">|</span>
+            <a href="#ingenieria" class="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-400 hover:text-tm-gold transition-colors font-bold">Tecnología</a>
+            <span class="text-gray-700 text-xs hidden md:inline">|</span>
+            <a href="#portafolio" class="text-[9px] md:text-[10px] uppercase tracking-widest text-gray-400 hover:text-tm-gold transition-colors font-bold">Galería VIP</a>
+            
+            <a href="ventas.html" class="md:ml-4 btn-action px-6 py-2 text-[9px] md:text-[10px] uppercase tracking-widest text-black rounded-full transition-all font-bold flex items-center gap-2">
+                Personalizar
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 pt-32 md:pt-40">
+        <section id="inicio" class="min-h-[85vh] flex flex-col justify-center items-center px-6">
+            
+            <div class="mb-6 opacity-90 scale-110 flex justify-center items-center">
+                </div>
+            <div class="glass-panel rounded-[2.5rem] p-8 md:p-16 max-w-5xl w-full text-center fade-in">
+                <h2 class="text-tm-gold tracking-[0.5em] uppercase text-xs mb-6 font-bold drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]">El Estatus No Se Dice</h2>
+                
+                <h1 class="font-playfair text-4xl md:text-7xl text-white font-bold mb-8 leading-tight drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)]">
+                    Se Muestra en <span class="text-transparent bg-clip-text bg-gradient-to-r from-tm-gold-light via-tm-gold to-[#997a00]">Metal Puro.</span>
+                </h1>
+
+                <p class="text-gray-300 text-sm md:text-lg tracking-wide font-light max-w-3xl mx-auto mb-12 leading-relaxed">
+                    Somos la autoridad en personalización de tarjetas bancarias en Colombia. Fusionamos ingeniería EMV con acabados en 
+                    <span class="text-tm-gold font-bold">Titanio, Oro de 24k y Acero Quirúrgico</span> para convertir una simple herramienta de pago en un símbolo de poder.
+                </p>
+
+                <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                    <a href="ventas.html" class="btn-action px-12 py-5 rounded-full font-bold uppercase tracking-widest text-sm flex items-center gap-3">
+                        Crear mi Tarjeta Metálica
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="ingenieria" class="min-h-screen py-24 px-8 flex items-center justify-center">
+            <div class="max-w-6xl w-full">
+                <div class="text-center mb-16">
+                    <h2 class="font-playfair text-3xl md:text-5xl text-white mb-4">Ingeniería <span class="text-tm-gold italic">Metálica</span></h2>
+                    <div class="w-16 h-1 bg-tm-gold mx-auto rounded-full opacity-50"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-2xl flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-500">
+                        <div class="w-14 h-14 rounded-full bg-black border border-tm-gold/40 flex items-center justify-center mb-6 text-tm-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                        </div>
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-white mb-3">Trasplante EMV</h3>
+                        <p class="text-[11px] text-gray-400 leading-relaxed font-light">Extraemos el chip original de tu plástico con precisión de laboratorio y lo implantamos en la estructura metálica. Funcionalidad total garantizada.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-500 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-b from-tm-gold/10 to-transparent pointer-events-none"></div>
+                        <div class="w-14 h-14 rounded-full bg-black border border-tm-gold/40 flex items-center justify-center mb-6 text-tm-gold shadow-[0_0_15px_rgba(212,175,55,0.2)] relative z-10">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-tm-gold mb-3 relative z-10">Grabado Láser</h3>
+                        <p class="text-[11px] text-gray-400 leading-relaxed font-light relative z-10">Marcamos la superficie con láser de fibra óptica de grado aeroespacial. Tus diseños y datos bancarios tallados para la eternidad.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl flex flex-col items-center text-center transform hover:-translate-y-2 transition-transform duration-500">
+                        <div class="w-14 h-14 rounded-full bg-black border border-tm-gold/40 flex items-center justify-center mb-6 text-tm-gold shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                        </div>
+                        <h3 class="text-sm font-bold uppercase tracking-widest text-white mb-3">Pesado y Sólido</h3>
+                        <p class="text-[11px] text-gray-400 leading-relaxed font-light">Siente la diferencia de depositar hasta 28 gramos de acero inoxidable en la mesa. Un peso que exige respeto y captura miradas de inmediato.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portafolio" class="min-h-screen py-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-playfair text-4xl text-white mb-4 italic">Obras Maestras</h2>
+                    <p class="text-tm-gold uppercase tracking-[0.3em] text-[10px]">Trabajos Realizados para Clientes VIP</p>
+                </div>
+
+                <div id="portfolioGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    </div>
+            </div>
+        </section>
+
+        <footer class="py-12 border-t border-tm-gold/10 text-center opacity-40">
+            <p class="text-[9px] uppercase tracking-[0.5em]">BS Premium Cards © 2026 | Cali, Colombia</p>
+        </footer>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, flyingCards = [];
+
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 35;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('threejs-canvas-container').appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0xd4af37, 2, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+
+            const geometry = new THREE.PlaneGeometry(8, 5); // Tamaño tarjetas
+            
+            // Materiales de tarjetas voladoras
+            const materials = [
+                new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.2, side: THREE.DoubleSide }), // Negro/Amex
+                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 1.0, roughness: 0.1, side: THREE.DoubleSide }), // Oro
+                new THREE.MeshStandardMaterial({ color: 0x002e5f, metalness: 0.8, roughness: 0.3, side: THREE.DoubleSide })  // Azul/Bancolombia
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                const mesh = new THREE.Mesh(geometry, materials[Math.floor(Math.random() * materials.length)]);
+                mesh.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*40 - 20);
+                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+                scene.add(mesh);
+                flyingCards.push({ mesh, speed: 0.02 + Math.random()*0.05, rot: 0.005 + Math.random()*0.01 });
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            flyingCards.forEach(card => {
+                card.mesh.position.y += card.speed;
+                card.mesh.rotation.x += card.rot;
+                card.mesh.rotation.y += card.rot;
+                if (card.mesh.position.y > 50) card.mesh.position.y = -50;
+            });
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init3D(); animate();
+
+        // LÓGICA DE PORTAFOLIO (INDEXEDDB)
+        const portfolioGrid = document.getElementById('portfolioGrid');
+        const dbReq = indexedDB.open("BS_Portfolio", 1);
+        dbReq.onsuccess = (e) => {
+            const db = e.target.result;
+            if(db.objectStoreNames.contains("works")) {
+                const store = db.transaction("works", "readonly").objectStore("works");
+                store.getAll().onsuccess = (ev) => {
+                    const works = ev.target.result;
+                    if (works.length === 0) portfolioGrid.innerHTML = "<p class='col-span-full text-gray-600 text-xs tracking-widest'>GALERÍA EN ACTUALIZACIÓN...</p>";
+                    works.reverse().forEach(w => {
+                        const div = document.createElement('div');
+                        div.className = "glass-panel rounded-2xl overflow-hidden h-64 hover:border-tm-gold transition-all duration-500 group";
+                        div.innerHTML = `<img src="${w.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80">`;
+                        portfolioGrid.appendChild(div);
+                    });
+                };
+            }
+        };
+    </script>
+</body>
+</html>
