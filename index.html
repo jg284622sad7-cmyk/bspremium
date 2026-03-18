@@ -35,17 +35,17 @@
 
         #threejs-canvas-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; 
-            pointer-events: none; opacity: 0.9; 
+            pointer-events: none; opacity: 1; 
         }
 
         .overlay-dark {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);
             z-index: -1; pointer-events: none;
         }
 
         .glass-nav {
-            background: rgba(5, 5, 5, 0.75);
+            background: rgba(5, 5, 5, 0.6); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.15);
@@ -53,9 +53,9 @@
         }
 
         .glass-panel {
-            background: rgba(10, 10, 10, 0.4);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 10, 10, 0.3); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
@@ -191,6 +191,88 @@
     <script>
         let scene, camera, renderer, flyingCards = [];
 
+        // MOTOR STARK: Creador de Texturas de Tarjeta en Vivo
+        function createCardTexture(type) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 640;
+            const ctx = canvas.getContext('2d');
+
+            // 1. Color Base Metálico
+            let baseColor, textColor, brandText;
+            if (type === 'black') {
+                baseColor = '#111111'; textColor = '#777777'; brandText = 'EXPRESS VIP';
+            } else if (type === 'gold') {
+                baseColor = '#d4af37'; textColor = '#ffffff'; brandText = 'PREMIUM EMV';
+            } else {
+                baseColor = '#002e5f'; textColor = '#dddddd'; brandText = 'WORLD ELITE';
+            }
+
+            // Fondo con ligero gradiente para volumen
+            const grad = ctx.createLinearGradient(0, 0, 1024, 640);
+            grad.addColorStop(0, baseColor);
+            grad.addColorStop(1, '#000000');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 640);
+
+            // 2. Chip EMV
+            ctx.fillStyle = '#e5c158'; 
+            ctx.beginPath();
+            ctx.roundRect(100, 260, 140, 110, 15);
+            ctx.fill();
+            // Líneas del chip
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(100, 290); ctx.lineTo(140, 290);
+            ctx.moveTo(100, 330); ctx.lineTo(140, 330);
+            ctx.moveTo(240, 290); ctx.lineTo(200, 290);
+            ctx.moveTo(240, 330); ctx.lineTo(200, 330);
+            ctx.stroke();
+
+            // 3. Símbolo NFC
+            ctx.strokeStyle = textColor;
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(280, 315, 10, -Math.PI/4, Math.PI/4); ctx.stroke();
+            ctx.beginPath(); ctx.arc(270, 315, 20, -Math.PI/4, Math.PI/4); ctx.stroke();
+            ctx.beginPath(); ctx.arc(260, 315, 30, -Math.PI/4, Math.PI/4); ctx.stroke();
+
+            // 4. Números de Tarjeta (Relieve)
+            ctx.fillStyle = textColor;
+            ctx.font = 'bold 65px monospace';
+            ctx.shadowColor = 'rgba(0,0,0,0.8)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            ctx.fillText('4230  1234  5678  9010', 100, 480);
+
+            // 5. Nombre y Fecha
+            ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+            ctx.font = '30px sans-serif';
+            ctx.fillText('02/29', 450, 530);
+            ctx.font = '35px monospace';
+            ctx.fillText('BS PREMIUM MEMBER', 100, 570);
+
+            // 6. Franquicia / Logo
+            ctx.font = 'italic bold 50px serif';
+            ctx.textAlign = 'right';
+            
+            if (type === 'blue') {
+                // Estilo Mastercard (Círculos)
+                ctx.fillStyle = 'rgba(235, 0, 27, 0.9)';
+                ctx.beginPath(); ctx.arc(860, 530, 45, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = 'rgba(247, 158, 27, 0.9)';
+                ctx.beginPath(); ctx.arc(920, 530, 45, 0, Math.PI*2); ctx.fill();
+            } else {
+                ctx.fillText(brandText, 950, 560);
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.anisotropy = 16;
+            return texture;
+        }
+
         function init3D() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -201,27 +283,36 @@
             renderer.setPixelRatio(window.devicePixelRatio);
             document.getElementById('threejs-canvas-container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.4); 
             scene.add(ambientLight);
 
-            const pointLight = new THREE.PointLight(0xd4af37, 2, 100);
-            pointLight.position.set(10, 10, 10);
+            const pointLight = new THREE.PointLight(0xd4af37, 3, 150); 
+            pointLight.position.set(15, 15, 15);
             scene.add(pointLight);
 
-            const geometry = new THREE.PlaneGeometry(8, 5); 
+            const fillLight = new THREE.PointLight(0xffffff, 1.5, 100); 
+            fillLight.position.set(-15, -10, 15);
+            scene.add(fillLight);
+
+            const geometry = new THREE.PlaneGeometry(8.5, 5.3); 
             
+            // INYECTAMOS LAS TEXTURAS REALISTAS GENERADAS
+            const texBlack = createCardTexture('black');
+            const texGold = createCardTexture('gold');
+            const texBlue = createCardTexture('blue');
+
             const materials = [
-                new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.2, side: THREE.DoubleSide }), 
-                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 1.0, roughness: 0.1, side: THREE.DoubleSide }), 
-                new THREE.MeshStandardMaterial({ color: 0x002e5f, metalness: 0.8, roughness: 0.3, side: THREE.DoubleSide })  
+                new THREE.MeshStandardMaterial({ map: texBlack, metalness: 0.9, roughness: 0.15, side: THREE.DoubleSide }), 
+                new THREE.MeshStandardMaterial({ map: texGold, metalness: 0.8, roughness: 0.1, side: THREE.DoubleSide }), 
+                new THREE.MeshStandardMaterial({ map: texBlue, metalness: 0.7, roughness: 0.2, side: THREE.DoubleSide })  
             ];
 
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 30; i++) {
                 const mesh = new THREE.Mesh(geometry, materials[Math.floor(Math.random() * materials.length)]);
-                mesh.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*40 - 20);
+                mesh.position.set((Math.random()-0.5)*90, (Math.random()-0.5)*100, (Math.random()-0.5)*30 - 5);
                 mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
                 scene.add(mesh);
-                flyingCards.push({ mesh, speed: 0.02 + Math.random()*0.05, rot: 0.005 + Math.random()*0.01 });
+                flyingCards.push({ mesh, speed: 0.03 + Math.random()*0.05, rot: 0.005 + Math.random()*0.015 });
             }
         }
 
@@ -231,7 +322,7 @@
                 card.mesh.position.y += card.speed;
                 card.mesh.rotation.x += card.rot;
                 card.mesh.rotation.y += card.rot;
-                if (card.mesh.position.y > 50) card.mesh.position.y = -50;
+                if (card.mesh.position.y > 60) card.mesh.position.y = -60;
             });
             renderer.render(scene, camera);
         }
