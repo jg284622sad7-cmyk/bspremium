@@ -21,50 +21,46 @@
     <style>
         .glare-overlay { position: absolute; inset: 0; z-index: 20; pointer-events: none; background: radial-gradient(circle at var(--g-x, 50%) var(--g-y, 50%), rgba(255, 255, 255, 0.6) 0%, transparent 60%); mix-blend-mode: overlay; opacity: 0.8; }
         
-        /* ========================================== */
-        /* 🚨 NUEVO CATÁLOGO 8 METALES HIPERREALISTAS 🚨 */
-        /* ========================================== */
-        
-        /* 1. MATE (Matte Black Deep Profundo) */
+        /* 🚨 PLÁSTICOS GENÉRICOS (ANTES) 🚨 */
+        .plast-black { background: linear-gradient(135deg, #2b2b2b 0%, #111 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .plast-blue { background: linear-gradient(135deg, #003b73 0%, #001f3f 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .plast-purple { background: linear-gradient(135deg, #8a05be 0%, #4a0072 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); }
+        .plastic-chip { background: linear-gradient(135deg, #e6c27a 0%, #c5a059 100%); border: 1px solid #a67c00; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(255,255,255,0.5), 0 1px 3px rgba(0,0,0,0.5); }
+        .plastic-emboss { text-shadow: -1px -1px 1px rgba(0,0,0,0.8), 1px 1px 1px rgba(255,255,255,0.3); color: #d0d0d0; }
+
+        /* CATÁLOGO 8 METALES HIPERREALISTAS */
         .mat-black { background-color: #0f0f0f; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEUWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhZ4X5O5AAAAHXRSTlMGPw8fLz8/T09vb39/j4+Pn5+fr6+vt7e3z8/P39/fOQyQngAAAGJJREFUeNqV08sSgzAMRFEnNREo5Z02//9bVpM4pZpMskh5uFpIQtIkSVLzT64G8Xy+r+cT+Xw+85w5T+Scc845p7lEnue8Z86zZJ4Xz7mueVw8T6TnnOec8zwunnOf87g45xLpX/EDe4cE/0XQ/x8AAAAASUVORK524"); box-shadow: inset 0 0 1px 1px rgba(255,255,255,0.05), inset 0 0 70px rgba(0,0,0,1); }
-        
-        /* 2. SILVER BRUSH (Titanium Cepillado Real) */
         .mat-silverbrush { background: linear-gradient(105deg, #7a7a7a 0%, #e8e8e8 20%, #ffffff 40%, #ffffff 60%, #e0e0e0 80%, #909090 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8), inset 0 0 50px rgba(0,0,0,0.5); position: relative; }
         .mat-silverbrush::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 1px, rgba(0,0,0,0.05) 1px, rgba(0,0,0,0.05) 2px); opacity: 0.3; pointer-events: none; }
-        
-        /* 3. GOLD ROSE (Oro Rosa Hiperrealista) */
+        .mat-goldbrush { background: linear-gradient(105deg, #a67c00 0%, #e6c27a 20%, #fffacc 40%, #fffacc 60%, #d4af37 80%, #806600 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), inset 0 0 50px rgba(0,0,0,0.5); position: relative; }
+        .mat-goldbrush::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 1px, rgba(0,0,0,0.05) 1px, rgba(0,0,0,0.05) 2px); opacity: 0.3; pointer-events: none; }
         .mat-rosegold { background: linear-gradient(105deg, #b87333 0%, #e6a88d 20%, #ffcfb1 40%, #ffe0cc 50%, #ffcfb1 60%, #e6a88d 80%, #9e553c 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), inset 0 0 50px rgba(0,0,0,0.4); position: relative; }
         .mat-rosegold::after { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent 0px, transparent 1px, rgba(0,0,0,0.03) 1px, rgba(0,0,0,0.03) 2px); opacity: 0.2; pointer-events: none; }
-        
-        /* 4. ORO (Oro Macizo 24K Profundo) */
         .mat-gold24k { background: linear-gradient(110deg, #997300 0%, #d4af37 15%, #ffd700 35%, #fffacc 50%, #ffd700 65%, #c5a000 85%, #806600 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), inset 0 0 70px rgba(0,0,0,0.7); position: relative; }
         .mat-gold24k::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAAp4XiDAAAAUVBMVEUWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhZ4X5O5AAAAHXRSTlMGPw8fLz8/T09vb39/j4+Pn5+fr6+vt7e3z8/P39/fOQyQngAAAGJJREFUeNqV08sSgzAMRFEnNREo5Z02//9bVpM4pZpMskh5uFpIQtIkSVLzT64G8Xy+r+cT+Xw+85w5T+Scc845p7lEnue8Z86zZJ4Xz7mueVw8T6TnnOec8zwunnOf87g45xLpX/EDe4cE/0XQ/x8AAAAASUVORK524"); opacity: 0.1; mix-blend-mode: overlay; pointer-events: none; }
-        
-        /* 5. ROJO (Rojo Anodizado Deep Gloss) */
-        .mat-red { background: linear-gradient(115deg, #7f0000 0%, #cc0000 30%, #ff3333 50%, #cc0000 70%, #660000 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), inset 0 0 60px rgba(0,0,0,0.8); }
-        
-        /* 6. PLATA (Plata Brillante Mirror Finish) */
         .mat-plata { background: linear-gradient(110deg, #909090 0%, #d0d0d0 20%, #ffffff 45%, #ffffff 55%, #c0c0c0 80%, #707070 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.9), inset 0 0 50px rgba(0,0,0,0.4); }
-        
-        /* 7. EXOTIC TITANIUM (Rainbow PVD) */
         .mat-exotic { background: linear-gradient(110deg, #1a0033 0%, #4c0099 20%, #00bfff 40%, #6ffffc 50%, #6a0dad 60%, #c100d1 80%, #1a0033 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3), inset 0 0 70px rgba(0,0,0,0.9); position: relative; overflow: hidden; }
         .mat-exotic::after { content: ''; position: absolute; inset: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW/AAAAF0lEQVQIW2NkYGD4z8DAwMgABXAGOMAsAB4AAmB/r34AAAAASUVORK524='); opacity: 0.1; mix-blend-mode: overlay; }
-        
-        /* 8. ORO LAMINADO (Gold Plated Real Tone) */
         .mat-goldlam { background: linear-gradient(105deg, #a67c00 0%, #c5a059 25%, #e6c27a 50%, #fdf0cd 75%, #a67c00 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), inset 0 0 50px rgba(0,0,0,0.4); }
 
-        /* ========================================== */
-
-        #card3D { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.05s ease-out; box-shadow: 0 50px 100px -20px rgba(0,0,0,1); border-radius: 0.75rem; --g-x: 50%; --g-y: 50%; }
+        /* FÍSICAS DE TARJETAS 3D DUALES */
+        .card-container { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; transition: transform 0.05s ease-out; box-shadow: 0 50px 100px -20px rgba(0,0,0,1); border-radius: 0.75rem; --g-x: 50%; --g-y: 50%; }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 0.75rem; overflow: hidden; }
         .card-front { transform: rotateY(0deg); } .card-back { transform: rotateY(180deg); } 
-        #rotationHand { position: absolute; bottom: -50px; right: -50px; width: 120px; height: 120px; background: url('image_0.png') no-repeat center; background-size: contain; transform: translateZ(40px) rotate(-15deg); z-index: 200; cursor: grab; }
+        #rotationHand { position: absolute; bottom: -50px; right: -50px; width: 120px; height: 120px; background: url('image_0.png') no-repeat center; background-size: contain; transform: translateZ(60px) rotate(-15deg); z-index: 200; cursor: grab; }
 
+        /* MÁSCARA DEL ESCÁNER LÁSER */
+        #after-wrapper { position: absolute; inset: 0; pointer-events: none; clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); -webkit-clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%); z-index: 10; }
+        #slider-handle { position: absolute; top: -5%; bottom: -5%; width: 4px; background: linear-gradient(to bottom, transparent, #D4AF37, transparent); cursor: ew-resize; z-index: 300; transform: translateX(-50%); left: 50%; box-shadow: 0 0 15px #D4AF37; pointer-events: auto; touch-action: none; }
+        #slider-handle::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: #0a0a0a; border: 2px solid #D4AF37; border-radius: 50%; box-shadow: 0 0 10px #D4AF37; }
+        #slider-handle::before { content: '◀ ▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #D4AF37; font-size: 8px; font-weight: bold; z-index: 10; }
+
+        /* MAGIA ÓPTICA DE LÁSER */
         .engrave-light { filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.8)) drop-shadow(-1px -1px 0px rgba(255,255,255,0.3)) drop-shadow(4px 4px 6px rgba(0,0,0,0.7)); opacity: 0.95; mix-blend-mode: screen; }
         .engrave-dark { filter: drop-shadow(1px 1px 0px rgba(255,255,255,0.6)) drop-shadow(-1px -1px 0px rgba(0,0,0,0.8)) drop-shadow(4px 4px 6px rgba(0,0,0,0.7)); opacity: 0.95; mix-blend-mode: multiply; }
-        
+
         .glass-panel { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(212, 175, 55, 0.15); }
-        .btn-mat { transition: all 0.3s ease; }
+        .btn-mat, .btn-plast { transition: all 0.3s ease; }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #D4AF37; }
     </style>
 </head>
@@ -78,27 +74,55 @@
         
         <div class="flex flex-col items-center justify-center sticky top-10" id="viewZone">
             <h1 class="font-playfair text-3xl md:text-5xl font-bold mb-2 tracking-wide text-center">BS <span class="text-tm-gold italic">Premium</span></h1>
-            <p class="text-gray-400 text-[10px] uppercase tracking-[0.3em] mb-10 text-center">Laboratorio de Personalización</p>
+            
+            <div class="flex justify-between w-full px-8 text-[10px] uppercase tracking-[0.3em] font-bold mb-6 text-gray-400">
+                <span>Plástico Base</span>
+                <span class="text-tm-gold">Metal Premium</span>
+            </div>
 
             <div id="scene" style="perspective:2000px; width:100%; max-width:32rem; aspect-ratio:1.586/1; position:relative;">
                 <div id="rotationHand"><div class="absolute -top-10 left-1/2 flex flex-col items-center pointer-events-none animate-bounce"><span class="text-[9px] text-tm-gold font-bold bg-black/90 px-3 py-1 rounded border border-tm-gold/50 tracking-widest">GIRAR</span></div></div>
-                <div id="card3D">
-                    <div id="cardFront" class="card-face card-front mat-black">
+                
+                <div id="cardBefore" class="card-container pointer-events-none">
+                    <div id="cardFrontBefore" class="card-face card-front plast-black relative">
                         <div class="glare-overlay"></div>
-                        <div class="absolute top-8 left-8 w-12 h-10 border border-gray-400 rounded-md opacity-70" style="transform:translateZ(1px);"></div>
-                        <svg class="absolute top-9 left-24 w-8 h-8 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform:translateZ(1px);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <div id="designInjectionZone" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+                        <div class="absolute top-8 left-8 w-12 h-9 plastic-chip"></div>
+                        <div class="absolute top-10 left-24 w-6 h-6 opacity-60"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        <div class="absolute top-8 right-8 text-white/50 font-sans font-black italic text-xl tracking-widest drop-shadow-md">BANK</div>
+                        <div class="absolute bottom-16 left-8 text-white/90 font-mono text-xl tracking-widest plastic-emboss">4230 1234 5678 9010</div>
+                        <div class="absolute bottom-6 left-8 text-white/90 font-mono text-sm tracking-widest uppercase plastic-emboss">SANTIAGO RAMOS</div>
+                        <div class="absolute bottom-6 right-8 w-12 h-8 bg-white/20 backdrop-blur rounded flex items-center justify-center italic font-bold text-[10px]">VISA</div>
                     </div>
-                    <div id="cardBack" class="card-face card-back mat-black flex flex-col items-center">
+                    <div id="cardBackBefore" class="card-face card-back plast-black flex flex-col items-center">
                         <div class="glare-overlay"></div>
-                        <div class="w-full h-12 bg-[#050505] mt-6 shadow-inner"></div>
-                        <div class="w-10/12 h-10 bg-gray-300 mt-4 rounded-sm flex items-center px-4 opacity-90"><span class="text-black font-mono text-[10px] italic font-bold ml-auto">CVV ***</span></div>
-                        <div class="mt-auto mb-6 text-center opacity-60">
-                            <p class="text-[8px] uppercase tracking-widest font-bold font-sans">BS Premium Cards</p>
-                            <p class="text-[6px] tracking-wider uppercase mt-1 font-sans">NFC Enabled - Premium Grade</p>
+                        <div class="w-full h-12 bg-[#222] mt-6 shadow-md"></div>
+                        <div class="w-10/12 h-10 bg-white/90 mt-4 rounded-sm flex items-center px-4 shadow-inner"><span class="text-black font-mono text-xs italic font-bold ml-auto">123</span></div>
+                    </div>
+                </div>
+
+                <div id="after-wrapper">
+                    <div id="cardAfter" class="card-container">
+                        <div id="cardFrontAfter" class="card-face card-front mat-black">
+                            <div class="glare-overlay"></div>
+                            <div class="absolute top-8 left-8 w-12 h-10 border border-gray-400 rounded-md opacity-70" style="transform:translateZ(1px);"></div>
+                            <svg class="absolute top-9 left-24 w-8 h-8 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform:translateZ(1px);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            
+                            <div id="designInjectionZone" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"></div>
+                            
+                        </div>
+                        <div id="cardBackAfter" class="card-face card-back mat-black flex flex-col items-center">
+                            <div class="glare-overlay"></div>
+                            <div class="w-full h-12 bg-[#050505] mt-6 shadow-inner"></div>
+                            <div class="w-10/12 h-10 bg-gray-300 mt-4 rounded-sm flex items-center px-4 opacity-90"><span class="text-black font-mono text-[10px] italic font-bold ml-auto">CVV ***</span></div>
+                            <div class="mt-auto mb-6 text-center opacity-60">
+                                <p class="text-[8px] uppercase tracking-widest font-bold font-sans">BS Premium Cards</p>
+                                <p class="text-[6px] tracking-wider uppercase mt-1 font-sans">NFC Enabled - Premium Grade</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div id="slider-handle"></div>
             </div>
             
             <div class="flex gap-6 mt-16">
@@ -107,60 +131,58 @@
             </div>
         </div>
 
-        <div class="flex flex-col space-y-8">
+        <div class="flex flex-col space-y-8 pb-10">
+            
+            <div class="space-y-4 bg-black/40 p-5 rounded-xl border border-gray-800">
+                <label class="text-xs tracking-[0.2em] uppercase text-gray-400 font-bold">I. Tu Tarjeta Actual (Plástico)</label>
+                <div class="grid grid-cols-3 gap-3">
+                    <button onclick="setPlastic('plast-black')" class="btn-plast border border-tm-gold p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded text-tm-gold">
+                        <div class="w-full h-6 plast-black rounded border border-gray-700"></div> Clásica
+                    </button>
+                    <button onclick="setPlastic('plast-blue')" class="btn-plast border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold text-gray-300 hover:text-tm-gold">
+                        <div class="w-full h-6 plast-blue rounded border border-gray-700"></div> Blue
+                    </button>
+                    <button onclick="setPlastic('plast-purple')" class="btn-plast border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold text-gray-300 hover:text-tm-gold">
+                        <div class="w-full h-6 plast-purple rounded border border-gray-700"></div> Nu Style
+                    </button>
+                </div>
+            </div>
+
             <div class="space-y-4">
-                <label class="text-xs tracking-[0.2em] uppercase text-tm-gold font-bold">I. Base Metálica Exclusive Collection (8 Aleaciones)</label>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    
+                <label class="text-xs tracking-[0.2em] uppercase text-tm-gold font-bold">II. Base Metálica Exclusive (8 Aleaciones)</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <button onclick="setMaterial('mat-black', 'engrave-light', 'Matte Black')" class="btn-mat border border-tm-gold p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded text-tm-gold">
                         <div class="w-full h-6 mat-black rounded"></div> Mate
                     </button>
                     <button onclick="setMaterial('mat-silverbrush', 'engrave-dark', 'Silver Brush')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
                         <div class="w-full h-6 mat-silverbrush rounded"></div> Silver Brush
                     </button>
+                    <button onclick="setMaterial('mat-goldbrush', 'engrave-dark', 'Gold Brush')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
+                        <div class="w-full h-6 mat-goldbrush rounded"></div> Gold Brush
+                    </button>
                     <button onclick="setMaterial('mat-rosegold', 'engrave-dark', 'Gold Rose')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
                         <div class="w-full h-6 mat-rosegold rounded"></div> Gold Rose
                     </button>
-                    <button onclick="setMaterial('mat-gold24k', 'engrave-dark', 'Oro Macizo 24K')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
-                        <div class="w-full h-6 mat-gold24k rounded"></div> Oro
+                    <button onclick="setMaterial('mat-gold24k', 'engrave-dark', 'Oro Macizo')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
+                        <div class="w-full h-6 mat-gold24k rounded"></div> Oro Macizo
                     </button>
-                    <button onclick="setMaterial('mat-red', 'engrave-light', 'Rojo Anodizado Deep')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
-                        <div class="w-full h-6 mat-red rounded"></div> Rojo
-                    </button>
-                    <button onclick="setMaterial('mat-plata', 'engrave-dark', 'Plata Brillante mirror')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
+                    <button onclick="setMaterial('mat-plata', 'engrave-dark', 'Plata')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
                         <div class="w-full h-6 mat-plata rounded"></div> Plata
                     </button>
-                    <button onclick="setMaterial('mat-exotic', 'engrave-light', 'Exotic Titanium Rainbow')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
+                    <button onclick="setMaterial('mat-exotic', 'engrave-light', 'Exotic')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
                         <div class="w-full h-6 mat-exotic rounded"></div> Exotic
                     </button>
-                    <button onclick="setMaterial('mat-goldlam', 'engrave-dark', 'Oro Laminado')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
-                        <div class="w-full h-6 mat-goldlam rounded"></div> Oro Lam.
+                    <button onclick="setMaterial('mat-goldlam', 'engrave-dark', 'Baño de Oro')" class="btn-mat border border-gray-700 p-3 text-[9px] font-bold uppercase tracking-widest flex flex-col items-center gap-2 bg-black/60 rounded hover:border-tm-gold">
+                        <div class="w-full h-6 mat-goldlam rounded"></div> Baño de Oro
                     </button>
-                    
                 </div>
             </div>
 
             <div class="space-y-4">
                 <label class="text-xs tracking-[0.2em] uppercase text-tm-gold font-bold flex justify-between items-center">
-                    II. Grabado VIP Láser 
+                    III. Grabado VIP Láser (Bóveda)
                     <button class="text-red-500 text-[9px] border border-red-900 bg-red-900/20 px-3 py-1 rounded hover:text-white transition-colors" onclick="clearDesigns()">Limpiar Láser</button>
                 </label>
-
-                <div class="bg-black/60 border border-tm-gold/30 p-4 rounded-xl space-y-3 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-tm-gold/5 to-transparent pointer-events-none"></div>
-                    <div class="relative z-10 flex items-center justify-between">
-                        <span class="text-[10px] text-tm-gold font-bold uppercase tracking-widest flex items-center gap-2">
-                            <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            Creador IA Estabilizado v3
-                        </span>
-                        <span class="text-[8px] text-gray-500">REALISM ON</span>
-                    </div>
-                    <div class="relative z-10 flex gap-2">
-                        <input type="text" id="aiPrompt" placeholder="Ej: Escudo Colombia, León Imperial, Lobo..." class="w-full bg-[#0a0a0a] border border-gray-700 text-white px-3 py-2 text-[10px] uppercase tracking-widest font-bold rounded focus:border-tm-gold focus:outline-none transition-colors">
-                        <button onclick="generateAI()" id="btnGenerateAI" class="bg-tm-gold text-black px-4 py-2 rounded text-[10px] font-black uppercase tracking-widest hover:bg-white transition-colors shrink-0">Generar</button>
-                    </div>
-                    <p id="aiStatus" class="text-[8px] text-tm-gold uppercase tracking-widest hidden relative z-10 animate-pulse text-center">Conectando red neuronal...</p>
-                </div>
 
                 <div id="dynamicGallery" class="grid grid-cols-3 md:grid-cols-4 gap-4 bg-black/40 p-4 border border-gray-800/50 rounded max-h-56 overflow-y-auto">
                     <p class="col-span-full text-center text-[10px] tracking-widest uppercase text-tm-gold animate-pulse">Conectando Bóveda...</p>
@@ -168,7 +190,7 @@
             </div>
 
             <div class="space-y-4 bg-black/50 p-6 border border-gray-700/50 rounded-xl">
-                <label class="text-xs tracking-[0.2em] uppercase text-tm-gold font-bold">III. Datos de Fabricación</label>
+                <label class="text-xs tracking-[0.2em] uppercase text-tm-gold font-bold">IV. Datos de Fabricación</label>
                 <input type="text" id="orderName" placeholder="NOMBRE (Ej. SANTIAGO)" class="w-full bg-[#0a0a0a] border border-gray-700 text-white px-4 py-3 text-xs uppercase tracking-widest font-bold rounded focus:border-tm-gold focus:outline-none transition-colors">
                 <div class="grid grid-cols-2 gap-4">
                     <select id="orderFranchise" class="w-full bg-[#0a0a0a] border border-gray-700 text-gray-300 px-4 py-3 text-xs uppercase tracking-widest font-bold rounded focus:border-tm-gold focus:outline-none transition-colors">
@@ -181,7 +203,7 @@
                 </div>
             </div>
 
-            <button onclick="sendOrder()" class="w-full bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] text-black font-black py-4 rounded uppercase tracking-[0.2em] text-sm hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+            <button onclick="sendOrder()" class="w-full bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] text-black font-black py-4 rounded uppercase tracking-[0.2em] text-sm hover:scale-[1.02] transition-transform shadow-[0_0_20px_rgba(212,175,55,0.4)] mt-4">
                 Confirmar Orden en WhatsApp
             </button>
         </div>
@@ -213,94 +235,114 @@
     </script>
 
     <script>
-        // FIREBASE Config
         const firebaseConfig = { apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA", authDomain: "bspremium-8d5db.firebaseapp.com", projectId: "bspremium-8d5db", storageBucket: "bspremium-8d5db.firebasestorage.app", messagingSenderId: "705566703093", appId: "1:705566703093:web:177729e3c86d90744674bc" };
         firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
         
-        const card3D = document.getElementById('card3D'); 
+        const cardBefore = document.getElementById('cardBefore'); 
+        const cardAfter = document.getElementById('cardAfter'); 
         let currentEngrave = 'engrave-light', currentMat = 'Matte Black', isDrag=false, startX=0, startY=0, rotX=0, rotY=0;
 
-        // FÍSICAS DE ROTACIÓN
-        function dragCard(e){ if(!isDrag)return; const cX=e.type.includes('touch')?e.touches[0].clientX:e.clientX, cY=e.type.includes('touch')?e.touches[0].clientY:e.clientY; rotY+=(cX-startX)*0.7; rotX-=(cY-startY)*0.7; if(rotX>75)rotX=75; if(rotX<-75)rotX=-75; card3D.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; card3D.style.setProperty('--g-x',`${50+(rotY*1.5)}%`); card3D.style.setProperty('--g-y',`${50-(rotX*1.5)}%`); startX=cX; startY=cY; }
-        document.getElementById('rotationHand').addEventListener('mousedown',(e)=>{isDrag=true; startX=e.clientX; startY=e.clientY; card3D.style.transition='none';});
-        document.getElementById('rotationHand').addEventListener('touchstart',(e)=>{isDrag=true; startX=e.touches[0].clientX; startY=e.touches[0].clientY; card3D.style.transition='none';}, {passive:false});
-        window.addEventListener('mousemove',dragCard); window.addEventListener('mouseup',()=>{isDrag=false;card3D.style.transition='transform 0.1s ease-out';});
-        window.addEventListener('touchmove',dragCard, {passive:false}); window.addEventListener('touchend',()=>{isDrag=false;card3D.style.transition='transform 0.1s ease-out';});
+        function dragCard(e){ 
+            if(!isDrag)return; 
+            const cX=e.type.includes('touch')?e.touches[0].clientX:e.clientX, cY=e.type.includes('touch')?e.touches[0].clientY:e.clientY; 
+            rotY+=(cX-startX)*0.7; rotX-=(cY-startY)*0.7; 
+            if(rotX>75)rotX=75; if(rotX<-75)rotX=-75; 
+            
+            cardBefore.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; 
+            cardAfter.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; 
+            
+            const gx = `${50+(rotY*1.5)}%`, gy = `${50-(rotX*1.5)}%`;
+            cardBefore.style.setProperty('--g-x', gx); cardBefore.style.setProperty('--g-y', gy);
+            cardAfter.style.setProperty('--g-x', gx); cardAfter.style.setProperty('--g-y', gy);
+            startX=cX; startY=cY; 
+        }
         
-        function resetRotation(){rotX=rotY=0;card3D.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';card3D.style.transform=`rotateX(0deg) rotateY(0deg)`;}
-        function flipCard(){rotX=0;rotY=rotY%360===0?180:0;card3D.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';card3D.style.transform=`rotateX(0deg) rotateY(${rotY}deg)`;}
+        document.getElementById('rotationHand').addEventListener('mousedown',(e)=>{isDrag=true; startX=e.clientX; startY=e.clientY; cardBefore.style.transition='none'; cardAfter.style.transition='none';});
+        document.getElementById('rotationHand').addEventListener('touchstart',(e)=>{isDrag=true; startX=e.touches[0].clientX; startY=e.touches[0].clientY; cardBefore.style.transition='none'; cardAfter.style.transition='none';}, {passive:false});
+        window.addEventListener('mousemove',dragCard); 
+        window.addEventListener('mouseup',()=>{isDrag=false;cardBefore.style.transition='transform 0.1s ease-out';cardAfter.style.transition='transform 0.1s ease-out';});
+        window.addEventListener('touchmove',dragCard, {passive:false}); 
+        window.addEventListener('touchend',()=>{isDrag=false;cardBefore.style.transition='transform 0.1s ease-out';cardAfter.style.transition='transform 0.1s ease-out';});
+        
+        function resetRotation(){
+            rotX=rotY=0;
+            cardBefore.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'; cardBefore.style.transform=`rotateX(0deg) rotateY(0deg)`;
+            cardAfter.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'; cardAfter.style.transform=`rotateX(0deg) rotateY(0deg)`;
+        }
+        function flipCard(){
+            rotX=0;rotY=rotY%360===0?180:0;
+            cardBefore.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'; cardBefore.style.transform=`rotateX(0deg) rotateY(${rotY}deg)`;
+            cardAfter.style.transition='transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'; cardAfter.style.transform=`rotateX(0deg) rotateY(${rotY}deg)`;
+        }
 
-        // LECTURA DE DISEÑOS EN VIVO
+        const sliderHandle = document.getElementById('slider-handle');
+        const afterWrapper = document.getElementById('after-wrapper');
+        const scene = document.getElementById('scene');
+        let isSliding = false;
+
+        function startSlide(e) { isSliding = true; e.stopPropagation(); }
+        function stopSlide() { isSliding = false; }
+        function moveSlide(e) {
+            if (!isSliding) return;
+            let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            let rect = scene.getBoundingClientRect();
+            let x = clientX - rect.left;
+            let percent = (x / rect.width) * 100;
+            if (percent < 0) percent = 0; if (percent > 100) percent = 100;
+            
+            sliderHandle.style.left = percent + '%';
+            let clipVal = `polygon(${percent}% 0, 100% 0, 100% 100%, ${percent}% 100%)`;
+            afterWrapper.style.clipPath = clipVal;
+            afterWrapper.style.webkitClipPath = clipVal;
+        }
+
+        sliderHandle.addEventListener('mousedown', startSlide);
+        sliderHandle.addEventListener('touchstart', startSlide, {passive: false});
+        window.addEventListener('mousemove', moveSlide);
+        window.addEventListener('touchmove', moveSlide, {passive: false});
+        window.addEventListener('mouseup', stopSlide);
+        window.addEventListener('touchend', stopSlide);
+
+        function setPlastic(plastClass) {
+            document.getElementById('cardFrontBefore').className = `card-face card-front relative ${plastClass}`;
+            document.getElementById('cardBackBefore').className = `card-face card-back flex flex-col items-center ${plastClass}`;
+            document.querySelectorAll('.btn-plast').forEach(b => { b.classList.remove('border-tm-gold','text-tm-gold'); b.classList.add('border-gray-700','text-gray-300'); });
+            event.currentTarget.classList.remove('border-gray-700','text-gray-300'); event.currentTarget.classList.add('border-tm-gold','text-tm-gold');
+        }
+
+        function setMaterial(mat, eng, name) {
+            document.getElementById('cardFrontAfter').className = `card-face card-front ${mat}`;
+            document.getElementById('cardBackAfter').className = `card-face card-back ${mat} flex flex-col items-center`;
+            currentEngrave = eng; currentMat = name;
+            
+            document.querySelectorAll('#designInjectionZone img').forEach(i => {
+                i.className = `w-full h-full object-cover pointer-events-none transition-all duration-500 ${eng}`;
+            });
+            
+            document.querySelectorAll('.btn-mat').forEach(b => { b.classList.remove('border-tm-gold','text-tm-gold'); b.classList.add('border-gray-700'); });
+            event.currentTarget.classList.remove('border-gray-700'); event.currentTarget.classList.add('border-tm-gold','text-tm-gold');
+        }
+
         db.collection("designs").orderBy("timestamp", "desc").onSnapshot(s => {
             const gal = document.getElementById('dynamicGallery'); gal.innerHTML = ''; 
             if(s.empty){ gal.innerHTML = '<p class="col-span-full text-gray-500 text-[10px] uppercase text-center py-4 tracking-widest">Bóveda vacía.</p>'; return; }
             s.forEach(doc => {
                 const d = doc.data(); const btn = document.createElement('button');
                 btn.className = 'p-3 border border-gray-700/50 bg-black/60 rounded-xl hover:border-tm-gold flex flex-col items-center gap-2 transition-all';
-                btn.onclick = () => { document.getElementById('designInjectionZone').innerHTML = `<img src="${d.image}" class="w-full h-full object-cover pointer-events-none transition-all duration-500 ${currentEngrave}">`; resetRotation(); }; 
+                btn.onclick = () => { 
+                    document.getElementById('designInjectionZone').innerHTML = `<img src="${d.image}" class="w-full h-full object-cover pointer-events-none transition-all duration-500 ${currentEngrave}">`; 
+                    resetRotation(); 
+                }; 
                 btn.innerHTML = `<div class="w-10 h-10 flex items-center justify-center p-1 bg-black/40 rounded"><img src="${d.image}" class="max-w-full max-h-full filter invert opacity-90"></div><span class="text-[8px] uppercase text-tm-gold font-bold truncate w-full text-center tracking-widest">${d.name}</span>`; 
                 gal.appendChild(btn);
             });
         });
 
-        function setMaterial(mat, eng, name) {
-            document.getElementById('cardFront').className = `card-face card-front ${mat}`;
-            document.getElementById('cardBack').className = `card-face card-back ${mat} flex flex-col items-center`;
-            currentEngrave = eng; currentMat = name;
-            
-            document.querySelectorAll('#designInjectionZone img').forEach(i => i.className=`w-full h-full object-cover pointer-events-none transition-all duration-500 ${eng}`);
-            
-            document.querySelectorAll('.btn-mat').forEach(b => { b.classList.remove('border-tm-gold','text-tm-gold'); b.classList.add('border-gray-700'); });
-            event.currentTarget.classList.remove('border-gray-700'); event.currentTarget.classList.add('border-tm-gold','text-tm-gold');
+        function clearDesigns() { 
+            document.getElementById('designInjectionZone').innerHTML = ''; 
         }
-
-        function clearDesigns() { document.getElementById('designInjectionZone').innerHTML = ''; }
         
         function sanitizeInput(input) { return input.replace(/[<>]/g, ""); }
-
-        // ==========================================
-        // 🧠 CEREBRO IA ESTABILIZADO SIN BACKEND V3
-        // ==========================================
-        function generateAI() {
-            const promptInput = document.getElementById('aiPrompt');
-            const prompt = promptInput.value.trim();
-            const btn = document.getElementById('btnGenerateAI');
-            const status = document.getElementById('aiStatus');
-
-            if(!prompt) {
-                alert("Jefe, necesito instrucciones. Escribe qué diseño quieres generar.");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = "SINTETIZANDO V3...";
-            status.classList.remove('hidden');
-            status.textContent = "FORJANDO VECTORES EN LA RED NEURONAL...";
-
-            const laserPrompt = `High contrast pure white monochrome vector art stencil on absolute pitch black background, minimalist clean lines, highly detailed luxury logo, isolated subject: ${prompt}`;
-            
-            const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(laserPrompt)}?width=1024&height=640&nologo=true&private=true`;
-
-            const img = new Image();
-            img.onload = () => {
-                document.getElementById('designInjectionZone').innerHTML = `<img src="${aiImageUrl}" class="w-full h-full object-cover pointer-events-none transition-all duration-500 ${currentEngrave}">`;
-                resetRotation();
-                restaurarUI("DISEÑO COMPLETADO.");
-                promptInput.value = '';
-            };
-            img.onerror = () => {
-                restaurarUI("ERROR DE CONEXIÓN IA. REINTENTANDO PROTOCOLO...");
-                setTimeout(generateAI, 1000); 
-            };
-            img.src = aiImageUrl;
-
-            function restaurarUI(msg) {
-                btn.disabled = false;
-                btn.innerHTML = "GENERAR";
-                status.textContent = msg;
-                setTimeout(() => status.classList.add('hidden'), 3000);
-            }
-        }
 
         function sendOrder() {
             const n = sanitizeInput(document.getElementById('orderName').value.trim());
@@ -309,9 +351,8 @@
             
             if(!n || !f || !b) return alert("Jefe, el cliente debe llenar todos los datos de fabricación antes de continuar.");
             
-            // LÍNEA OFICIAL DEL JEFE
             const message = `¡Hola BS Premium Cards! Quiero ordenar mi tarjeta Exclusive Collection.%0A%0A*Detalles de Fabricación:*%0A- Material: ${currentMat}%0A- Nombre a Grabar: ${n}%0A- Franquicia: ${f}%0A- Banco Emisor: ${b}%0A%0AYa tengo el diseño visual listo en la página.`;
-            window.open(`https://wa.me/573215497088?text=${message}`, '_blank');
+            window.open(`https://wa.me/573011554320?text=${message}`, '_blank');
         }
     </script>
 </body>
