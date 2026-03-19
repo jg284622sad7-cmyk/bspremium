@@ -3,193 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BS Admin | Trabajos Realizados</title>
-    
+    <title>BS Admin | Trabajos VIP</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'tm-gold': '#D4AF37',
-                        'tm-black': '#0a0a0a',
-                        'tm-gray': '#111111',
-                    },
-                    fontFamily: {
-                        'sans': ['Montserrat', 'sans-serif'],
-                        'playfair': ['"Playfair Display"', 'serif'],
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { 'tm-gold': '#D4AF37', 'tm-black': '#0a0a0a', 'tm-gray': '#111111', } } } }
     </script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
-<body class="bg-tm-black text-white min-h-screen p-8 font-sans selection:bg-tm-gold selection:text-black">
-
-    <div class="max-w-4xl mx-auto bg-tm-gray p-8 rounded-3xl border border-tm-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.05)] mt-10">
-        
+<body class="bg-tm-black text-white min-h-screen p-8 font-sans">
+    <div class="max-w-4xl mx-auto bg-tm-gray p-8 rounded-3xl border border-tm-gold/20 shadow-lg mt-10">
         <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-6">
             <div>
                 <h1 class="text-3xl font-playfair tracking-widest uppercase">BS <span class="text-tm-gold font-bold">Portafolio</span></h1>
-                <p class="text-gray-400 text-xs tracking-[0.2em] mt-2 font-bold uppercase">Base de Datos Central: FIREBASE</p>
+                <p class="text-gray-400 text-xs mt-2 font-bold uppercase tracking-widest">Organizador de Carpetas por Material</p>
             </div>
-            <a href="index.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black transition-colors text-[10px] uppercase tracking-widest rounded-full font-bold">
-                Ver Inicio en Vivo
-            </a>
+            <a href="index.html" target="_blank" class="px-6 py-3 border border-tm-gold text-tm-gold hover:bg-tm-gold hover:text-black rounded-full text-[10px] font-bold uppercase tracking-widest">Ver Inicio</a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div class="space-y-6">
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Foto Real (JPG/PNG)</h2>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold">1. Subir Foto Real</h2>
                 
                 <div class="space-y-3">
-                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo de Imagen (Foto de la tarjeta)</label>
-                    <input type="file" id="workImage" accept="image/*" class="w-full bg-black border border-gray-800 text-white px-4 py-3 focus:outline-none focus:border-tm-gold text-xs file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:bg-tm-gold file:text-black hover:file:bg-white transition-all rounded">
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Archivo (Foto de la tarjeta)</label>
+                    <input type="file" id="workImage" accept="image/*" class="w-full bg-black border border-gray-800 text-white px-4 py-3 text-xs file:bg-tm-gold file:text-black rounded">
                 </div>
 
-                <button onclick="saveWork()" class="w-full bg-tm-gold text-black font-bold py-4 rounded uppercase tracking-[0.2em] text-xs hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1">
-                    Publicar en Servidor Global
-                </button>
+                <div class="space-y-3">
+                    <label class="text-[10px] tracking-widest uppercase text-gray-400">Carpeta de Destino (Material)</label>
+                    <select id="workCategory" class="w-full bg-black border border-tm-gold text-white px-4 py-3 text-xs font-bold uppercase tracking-widest rounded cursor-pointer">
+                        <option value="oro">Oro Macizo / Laminado</option>
+                        <option value="titanio">Titanio</option>
+                        <option value="acero">Acero Quirúrgico</option>
+                    </select>
+                </div>
+
+                <button onclick="saveWork()" class="w-full bg-tm-gold text-black font-bold py-4 rounded uppercase tracking-[0.2em] text-xs hover:bg-white shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:-translate-y-1 transition-all">Publicar en Galería</button>
                 <p id="statusMsg" class="text-[10px] tracking-widest uppercase hidden font-bold text-center"></p>
             </div>
 
             <div>
-                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold mb-6 flex justify-between">
-                    2. Galería Pública
-                    <span class="text-[8px] text-green-500 animate-pulse flex items-center gap-1">
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span> Online
-                    </span>
-                </h2>
-                <div id="worksList" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    <p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10 animate-pulse">Sincronizando...</p>
-                </div>
+                <h2 class="text-tm-gold tracking-[0.2em] uppercase text-xs font-bold mb-6 flex justify-between">2. Fotos en Línea</h2>
+                <div id="worksList" class="space-y-3 max-h-96 overflow-y-auto pr-2"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // INICIALIZACIÓN DE FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA",
-            authDomain: "bspremium-8d5db.firebaseapp.com",
-            projectId: "bspremium-8d5db",
-            storageBucket: "bspremium-8d5db.firebasestorage.app",
-            messagingSenderId: "705566703093",
-            appId: "1:705566703093:web:177729e3c86d90744674bc"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyClpa9Pu1ai-aecrmFpI8FICQxybZwkfRA", authDomain: "bspremium-8d5db.firebaseapp.com", projectId: "bspremium-8d5db", storageBucket: "bspremium-8d5db.firebasestorage.app", messagingSenderId: "705566703093", appId: "1:705566703093:web:177729e3c86d90744674bc" };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.firestore();
 
         const workImageInput = document.getElementById('workImage');
+        const workCategorySelect = document.getElementById('workCategory');
         const worksList = document.getElementById('worksList');
         const statusMsg = document.getElementById('statusMsg');
 
-        // LECTURA EN TIEMPO REAL DESDE FIREBASE
         db.collection("portfolio").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             worksList.innerHTML = ''; 
-            if(snapshot.empty) {
-                worksList.innerHTML = '<p class="text-gray-500 text-[10px] tracking-widest uppercase text-center py-10">No hay fotos publicadas en la nube.</p>';
-                return;
-            }
             snapshot.forEach((doc) => {
                 const work = doc.data();
-                const workId = doc.id;
-
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between bg-black p-3 border border-gray-800 rounded-lg hover:border-tm-gold/30 transition-colors';
-                item.innerHTML = `
-                    <div class="flex items-center gap-4 overflow-hidden">
-                        <img src="${work.image}" class="w-16 h-10 object-cover rounded border border-gray-700" alt="foto">
-                        <span class="text-[9px] text-gray-400 uppercase tracking-widest truncate w-24">ID: ${workId.substring(0,6)}</span>
-                    </div>
-                    <button onclick="deleteWork('${workId}')" class="text-red-500 hover:text-red-400 text-[10px] font-bold uppercase ml-2 px-3 py-2 border border-red-900/50 bg-red-900/10 hover:bg-red-900/40 rounded transition-colors">
-                        Eliminar
-                    </button>
-                `;
-                worksList.appendChild(item);
+                worksList.innerHTML += `
+                    <div class="flex items-center justify-between bg-black p-3 border border-gray-800 rounded-lg">
+                        <div class="flex items-center gap-4">
+                            <img src="${work.image}" class="w-16 h-10 object-cover rounded border border-gray-700">
+                            <span class="text-[9px] text-tm-gold uppercase tracking-widest font-bold">[${work.category}]</span>
+                        </div>
+                        <button onclick="deleteWork('${doc.id}')" class="text-red-500 text-[10px] font-bold uppercase border border-red-900 bg-red-900/10 px-2 py-1 rounded hover:bg-red-600 hover:text-white">Borrar</button>
+                    </div>`;
             });
-        }, (error) => {
-            showStatus("Error conectando a Firebase: Revisa permisos.", "text-red-500");
         });
 
-        // COMPRESIÓN AGRESIVA (Calidad 0.7) PARA QUE NUNCA FALLE FIREBASE
         function saveWork() {
             const file = workImageInput.files[0];
-            if(!file) {
-                showStatus('Selecciona una foto, Jefe.', 'text-red-500');
-                return;
-            }
+            const category = workCategorySelect.value;
+            if(!file) return showStatus('Selecciona una foto.', 'text-red-500');
 
-            showStatus('Comprimiendo y subiendo al satélite...', 'text-tm-gold');
-
+            showStatus('Comprimiendo...', 'text-tm-gold');
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Límite estricto para fotos Reales
-                    const MAX_SIZE = 800; 
-                    let width = img.width;
-                    let height = img.height;
+                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                    let w = img.width, h = img.height; const MAX = 800;
+                    if(w>h) { if(w>MAX){h*=MAX/w; w=MAX;} } else { if(h>MAX){w*=MAX/h; h=MAX;} }
+                    canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                    const b64 = canvas.toDataURL('image/jpeg', 0.7);
 
-                    if (width > height) {
-                        if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
-                    } else {
-                        if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // Guardar como JPEG con calidad 70%
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-
-                    const sizeInMB = (compressedBase64.length * 0.75) / (1024 * 1024);
-                    if(sizeInMB > 1.0) {
-                        showStatus('Foto demasiado compleja, intenta recortarla.', 'text-red-500');
-                        return;
-                    }
-
-                    // GUARDADO 100% FIREBASE
-                    db.collection("portfolio").add({
-                        image: compressedBase64,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).then(() => {
-                        workImageInput.value = '';
-                        showStatus('FOTO GUARDADA EN LA NUBE.', 'text-green-500');
-                    }).catch((error) => {
-                        console.error("Error Firebase: ", error);
-                        showStatus('Error de transmisión (Revisa consola).', 'text-red-500');
-                    });
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file); 
+                    db.collection("portfolio").add({ image: b64, category: category, timestamp: firebase.firestore.FieldValue.serverTimestamp() })
+                    .then(() => { workImageInput.value=''; showStatus('FOTO EN GALERÍA.', 'text-green-500'); })
+                    .catch(() => showStatus('Error al subir.', 'text-red-500'));
+                }; img.src = e.target.result;
+            }; reader.readAsDataURL(file); 
         }
 
-        // BORRADO GLOBAL
-        function deleteWork(id) {
-            if(confirm("¿Seguro que quieres borrar esta foto de todos los servidores globales?")) {
-                db.collection("portfolio").doc(id).delete().then(() => {
-                    showStatus("Eliminado de la nube.", "text-red-500");
-                }).catch((error) => {
-                    console.error("Error Firebase: ", error);
-                });
-            }
-        }
-
-        function showStatus(msg, colorClass) {
-            statusMsg.textContent = msg;
-            statusMsg.className = `text-[10px] tracking-widest uppercase mt-3 block ${colorClass} text-center font-bold`;
-            statusMsg.classList.remove('hidden');
-            setTimeout(() => { statusMsg.classList.add('hidden') }, 4000);
-        }
+        function deleteWork(id) { if(confirm("¿Borrar de la galería global?")) db.collection("portfolio").doc(id).delete(); }
+        function showStatus(msg, c) { statusMsg.textContent=msg; statusMsg.className=`text-[10px] tracking-widest uppercase mt-3 block text-center font-bold ${c}`; statusMsg.classList.remove('hidden'); setTimeout(()=>statusMsg.classList.add('hidden'), 3000); }
     </script>
 </body>
 </html>
