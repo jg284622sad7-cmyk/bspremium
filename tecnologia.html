@@ -38,15 +38,23 @@
         .luxury-link:hover { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
         .luxury-link:hover::after { width: 100%; }
         
-        /* 🚨 TARJETAS 3D PURAS CON SOPORTE TÁCTIL 🚨 */
-        .tech-card-container { perspective: 1500px; height: 420px; width: 100%; cursor: pointer; }
-        .tech-card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
-        .tech-card-container:hover .tech-card, .tech-card-container.flipped .tech-card { transform: rotateY(180deg); }
+        /* 🚨 TARJETAS 3D PURAS CON SOPORTE TÁCTIL Y ANTI-BLEED MÓVIL 🚨 */
+        .tech-card-container { perspective: 1500px; -webkit-perspective: 1500px; height: 420px; width: 100%; cursor: pointer; }
+        .tech-card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
         
-        .tech-card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 2rem; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; }
+        /* Solo usa hover si el dispositivo soporta mouse (PC) */
+        @media (hover: hover) {
+            .tech-card-container:hover .tech-card { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
+        }
         
-        .tech-card-front { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); }
-        .tech-card-back { background: linear-gradient(135deg, #050505 0%, #111 100%); border: 1px solid rgba(212, 175, 55, 0.6); transform: rotateY(180deg); box-shadow: inset 0 0 30px rgba(212,175,55,0.1), 0 20px 40px rgba(0,0,0,0.8); }
+        /* Uso exclusivo de clase para touch (Celulares) */
+        .tech-card-container.flipped .tech-card { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
+        
+        /* TranslateZ(1px) evita el bug visual de Safari en iOS donde los z-index se mezclan al girar */
+        .tech-card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 2rem; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; }
+        
+        .tech-card-front { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); transform: rotateY(0deg) translateZ(1px); -webkit-transform: rotateY(0deg) translateZ(1px); }
+        .tech-card-back { background: linear-gradient(135deg, #050505 0%, #111 100%); border: 1px solid rgba(212, 175, 55, 0.6); transform: rotateY(180deg) translateZ(1px); -webkit-transform: rotateY(180deg) translateZ(1px); box-shadow: inset 0 0 30px rgba(212,175,55,0.1), 0 20px 40px rgba(0,0,0,0.8); }
         
         .gold-line { background: linear-gradient(90deg, transparent, #D4AF37, transparent); height: 1px; width: 100%; margin: 2rem 0; }
     </style>
