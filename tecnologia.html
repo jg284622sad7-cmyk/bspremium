@@ -1,226 +1,370 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BS Premium | Tecnología</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@300;400;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { 
             theme: { 
                 extend: { 
-                    colors: { 'tm-gold': '#D4AF37', 'tm-black': '#050505', 'tm-exotic': '#4c0099' },
-                    fontFamily: { 'playfair': ['"Playfair Display"', 'serif'], 'sans': ['Montserrat', 'sans-serif'], 'cinzel': ['Cinzel', 'serif'] }
+                    colors: { 
+                        'tm-gold': '#D4AF37', 'tm-gold-light': '#FDF5A9', 'tm-gold-dark': '#8B6508', 
+                        'tm-black': '#030303', 'tm-charcoal': '#111111' 
+                    },
+                    fontFamily: { 
+                        'playfair': ['"Playfair Display"', 'serif'], 
+                        'sans': ['Montserrat', 'sans-serif'], 
+                        'cinzel': ['Cinzel', 'serif'] 
+                    },
+                    animation: {
+                        'float-slow': 'floating 6s ease-in-out infinite'
+                    }
                 } 
             } 
         }
     </script>
 
     <style>
-        body { background-color: #030303; color: white; margin: 0; overflow-x: hidden; }
-
-        #threejs-canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 1; }
-        .nebula-bg { position: fixed; inset: 0; z-index: -3; background: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(76, 0, 153, 0.08) 0%, transparent 50%); animation: nebulaBreath 10s infinite alternate ease-in-out; }
-        @keyframes nebulaBreath { 0% { opacity: 0.4; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
-        .overlay-dark { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%); z-index: -1; pointer-events: none; }
-        
-        .glass-panel { background: rgba(10, 10, 10, 0.45); backdrop-filter: blur(24px); border: 1px solid rgba(212, 175, 55, 0.15); box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.05), 0 30px 60px rgba(0,0,0,0.9); }
-
-        .text-glow-exotic { background: linear-gradient(to right, #F3E5AB, #D4AF37, #997a00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 0px 25px rgba(212, 175, 55, 0.5)); }
-        ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
-        .text-shadow-heavy { text-shadow: 0 15px 40px rgba(0,0,0,1), 0 5px 15px rgba(0,0,0,0.9); }
-
-        .luxury-link { position: relative; transition: all 0.3s ease; }
-        .luxury-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #D4AF37; transition: width 0.3s ease; box-shadow: 0 0 5px #D4AF37; }
-        .luxury-link:hover { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .luxury-link:hover::after { width: 100%; }
-        
-        /* 🚨 TARJETAS 3D PURAS CON SOPORTE TÁCTIL Y ANTI-BLEED MÓVIL 🚨 */
-        .tech-card-container { perspective: 1500px; -webkit-perspective: 1500px; height: 420px; width: 100%; cursor: pointer; }
-        .tech-card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
-        
-        /* Solo usa hover si el dispositivo soporta mouse (PC) */
-        @media (hover: hover) {
-            .tech-card-container:hover .tech-card { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
+        /* RESET MÓVIL Y TEXTURA */
+        body { 
+            background-color: #030303; color: white; margin: 0; overflow-x: hidden; 
+            font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
         }
+
+        /* LOADER MÓVIL OPTIMIZADO */
+        #stark-loader { position: fixed; inset: 0; z-index: 9999; background-color: #030303; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s; }
+        .loader-logo-container { width: 50px; height: 50px; position: relative; margin-bottom: 2rem; }
+        @media(min-width: 768px) { .loader-logo-container { width: 60px; height: 60px; } }
+        .loader-ring { position: absolute; inset: 0; border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #D4AF37; animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; }
+        .loader-ring-inner { position: absolute; inset: 4px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; border-bottom-color: #FDF5A9; animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse; }
+        .loader-bar-container { width: 150px; height: 1px; background: rgba(255,255,255,0.05); overflow: hidden; margin-top: 1.5rem; position: relative; }
+        @media(min-width: 768px) { .loader-bar-container { width: 200px; } }
+        .loader-bar { height: 100%; background: linear-gradient(90deg, transparent, #D4AF37, transparent); width: 0%; animation: starkLoadBar 2.5s ease-in-out forwards; }
         
-        /* Uso exclusivo de clase para touch (Celulares) */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes starkLoadBar { 0% { width: 0%; margin-left: 0; } 50% { width: 100%; margin-left: 0; } 100% { width: 100%; margin-left: 100%; } }
+
+        /* ENTORNO 3D */
+        #threejs-canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 0.85; mix-blend-mode: screen; }
+        .nebula-bg { position: fixed; inset: 0; z-index: -3; background: radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(20, 20, 30, 0.5) 0%, transparent 50%); }
+        .overlay-dark { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(3,3,3,0.3) 0%, rgba(3,3,3,0.8) 60%, rgba(3,3,3,1) 100%); z-index: -1; pointer-events: none; }
+        
+        /* UI CRISTAL Y UTILIDADES */
+        .glass-nav { background: rgba(3, 3, 3, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.02); transition: all 0.4s ease; }
+        .text-gradient-gold { background: linear-gradient(to right, #8B6508, #D4AF37, #FDF5A9, #D4AF37, #8B6508); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: textShine 8s linear infinite; }
+        @keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-track { background: #030303; } ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 10px; } 
+
+        .line-lux { height: 1px; width: 1px; flex-grow: 1; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent); }
+        .fade-up { opacity: 0; transform: translateY(30px); filter: blur(5px); animation: fadeUpAnim 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.4s; } .delay-3 { animation-delay: 0.6s; }
+        @keyframes fadeUpAnim { 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+        /* 🚨 TARJETAS 3D DE TECNOLOGÍA (RESPONSIVE Y ANTI-BUG) 🚨 */
+        .tech-card-container { perspective: 2000px; -webkit-perspective: 2000px; width: 100%; aspect-ratio: 1 / 1.3; max-height: 420px; cursor: pointer; margin: 0 auto; }
+        .tech-card { width: 100%; height: 100%; position: relative; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; -webkit-transform-style: preserve-3d; border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        
+        /* Efecto Hover solo en PC */
+        @media (hover: hover) { .tech-card-container:hover .tech-card { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); } }
+        /* Efecto Touch en Móviles */
         .tech-card-container.flipped .tech-card { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
         
-        /* TranslateZ(1px) evita el bug visual de Safari en iOS donde los z-index se mezclan al girar */
-        .tech-card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 2rem; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; }
+        .tech-card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; text-align: center; }
         
-        .tech-card-front { background: linear-gradient(135deg, #111 0%, #1a1a1a 100%); border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 20px 40px rgba(0,0,0,0.8); transform: rotateY(0deg) translateZ(1px); -webkit-transform: rotateY(0deg) translateZ(1px); }
-        .tech-card-back { background: linear-gradient(135deg, #050505 0%, #111 100%); border: 1px solid rgba(212, 175, 55, 0.6); transform: rotateY(180deg) translateZ(1px); -webkit-transform: rotateY(180deg) translateZ(1px); box-shadow: inset 0 0 30px rgba(212,175,55,0.1), 0 20px 40px rgba(0,0,0,0.8); }
-        
-        .gold-line { background: linear-gradient(90deg, transparent, #D4AF37, transparent); height: 1px; width: 100%; margin: 2rem 0; }
+        /* Acabados de la tarjeta imitando los metales premium */
+        .tech-card-front { 
+            background: linear-gradient(145deg, #111 0%, #050505 100%);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            transform: rotateY(0deg) translateZ(1px); -webkit-transform: rotateY(0deg) translateZ(1px); 
+        }
+        .tech-card-back { 
+            background: linear-gradient(135deg, #020202 0%, #111 100%); 
+            border: 1px solid rgba(255,255,255,0.05);
+            transform: rotateY(180deg) translateZ(1px); -webkit-transform: rotateY(180deg) translateZ(1px); 
+        }
     </style>
 </head>
-<body class="font-sans flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
+
+    <div id="stark-loader">
+        <div class="loader-logo-container">
+            <div class="loader-ring"></div>
+            <div class="loader-ring-inner"></div>
+            <svg class="absolute inset-0 m-auto w-3 h-3 md:w-4 md:h-4 text-tm-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM12 6l6 6-6 6-6-6 6-6z"/>
+            </svg>
+        </div>
+        <p class="text-gray-500 text-[7px] md:text-[8px] tracking-[0.4em] uppercase font-light">Iniciando Laboratorio</p>
+        <div class="loader-bar-container"><div class="loader-bar"></div></div>
+    </div>
 
     <div class="nebula-bg"></div>
     <div id="threejs-canvas-container"></div>
     <div class="overlay-dark"></div>
 
-    <nav class="fixed top-0 w-full z-[100] glass-panel border-b border-tm-gold/10 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
-            <a href="index.html" class="font-cinzel text-xl md:text-2xl font-bold tracking-widest text-white hover:text-tm-gold transition-colors">BS <span class="text-tm-gold">PREMIUM</span></a>
+    <nav class="fixed top-0 w-full z-[100] glass-nav">
+        <div class="max-w-7xl mx-auto px-5 py-3 md:py-4 flex items-center justify-between">
             
-            <div class="flex w-full md:w-auto order-3 md:order-none justify-center gap-4 md:gap-8 items-center mt-4 md:mt-0">
-                <a href="index.html" class="text-[10px] uppercase tracking-[0.3em] text-gray-300 hover:text-tm-gold transition-colors font-bold text-shadow-heavy">Inicio</a>
-                <span class="text-tm-gold/30 text-xs">♦</span>
-                <a href="tecnologia.html" class="text-[10px] uppercase tracking-[0.3em] text-tm-gold transition-colors font-bold text-shadow-heavy">Tecnología</a>
-                <span class="text-tm-gold/30 text-xs">♦</span>
-                <a href="galeria.html" class="text-[10px] uppercase tracking-[0.3em] text-gray-300 hover:text-tm-gold transition-colors font-bold text-shadow-heavy">Galería VIP</a>
+            <a href="index.html" class="flex items-center gap-3 md:gap-4 group">
+                <div class="relative w-6 h-6 md:w-8 md:h-8 flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" class="w-full h-full transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        <defs>
+                            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FDF5A9" />
+                                <stop offset="50%" stop-color="#D4AF37" />
+                                <stop offset="100%" stop-color="#8B6508" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M50 5 L95 50 L50 95 L5 50 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+                        <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+                        <path d="M45 40 L55 40 L55 60 M45 50 L55 50" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="font-cinzel text-xs md:text-sm font-light tracking-[0.3em] text-white group-hover:text-tm-gold transition-colors duration-500">B S</span>
+                    <span class="text-[5px] md:text-[6px] uppercase tracking-[0.4em] md:tracking-[0.5em] text-gray-500 mt-[2px]">Premium</span>
+                </div>
+            </a>
+            
+            <div class="hidden sm:flex gap-6 md:gap-10 items-center">
+                <a href="index.html" class="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors font-light">Inicio</a>
+                <span class="text-tm-gold text-[8px] md:text-[9px] uppercase tracking-[0.2em] font-bold">Tecnología</span>
+                <a href="galeria.html" class="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors font-light">Galería VIP</a>
             </div>
 
-            <a href="ventas.html" class="text-tm-gold border border-tm-gold/50 px-4 md:px-6 py-2 text-[10px] uppercase tracking-[0.4em] rounded-full transition-all font-bold hover:bg-tm-gold hover:text-black shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
+            <a href="ventas.html" class="text-tm-gold border border-tm-gold/20 px-4 md:px-6 py-2 text-[7px] md:text-[8px] uppercase tracking-[0.2em] md:tracking-[0.3em] transition-all hover:bg-tm-gold hover:text-black rounded-sm">
                 Personalizar
             </a>
         </div>
     </nav>
 
-    <main class="relative z-10 flex-grow pt-32 pb-20">
+    <main class="relative z-10 flex-grow pt-24 md:pt-32 pb-20">
         
-        <section class="py-16 px-8 flex flex-col items-center justify-center">
-            <div class="max-w-7xl w-full">
-                <div class="text-center mb-20">
-                    <p class="text-tm-gold text-xs uppercase tracking-[0.5em] font-bold mb-4">Laboratorio de Precisión</p>
-                    <h2 class="font-cinzel text-5xl md:text-7xl text-white mb-6 font-bold text-shadow-heavy">LA FÍSICA DEL <span class="text-glow-exotic italic">LUJO.</span></h2>
-                    <div class="gold-line mx-auto w-1/4"></div>
-                    <p class="text-gray-400 text-sm max-w-2xl mx-auto font-light tracking-wide mt-6">
-                        No somos intermediarios. Poseemos nuestro propio laboratorio equipado con láseres de fibra óptica industriales y estaciones de microsoldadura térmica. Todo ocurre bajo un protocolo de seguridad absoluto.
-                    </p>
+        <section class="pt-10 pb-12 px-6 flex flex-col items-center justify-center">
+            <div class="max-w-5xl w-full text-center fade-up">
+                
+                <div class="flex items-center justify-center gap-3 md:gap-4 mb-5 md:mb-6">
+                    <div class="line-lux"></div>
+                    <span class="text-gray-400 tracking-[0.4em] md:tracking-[0.6em] uppercase text-[8px] md:text-[9px] font-light">Laboratorio de Precisión</span>
+                    <div class="line-lux"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    
-                    <div class="tech-card-container" onclick="this.classList.toggle('flipped')">
-                        <div class="tech-card">
-                            <div class="tech-card-face tech-card-front">
-                                <div class="w-24 h-24 rounded-full bg-black border border-tm-gold/40 flex items-center justify-center mb-8 text-tm-gold shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-                                </div>
-                                <h3 class="font-cinzel text-xl font-black uppercase tracking-[0.2em] text-white drop-shadow-md">Trasplante EMV</h3>
-                                <p class="mt-4 text-[9px] text-tm-gold uppercase tracking-widest animate-pulse">Toca para escanear</p>
+                <h1 class="font-cinzel text-4xl sm:text-5xl md:text-6xl text-white mb-4 md:mb-6 font-bold leading-tight">
+                    LA FÍSICA DEL <br>
+                    <span class="text-gradient-gold italic font-playfair pr-2 md:pr-4">Lujo.</span>
+                </h1>
+                
+                <p class="text-gray-400 text-[10px] md:text-sm max-w-2xl mx-auto font-light tracking-wide md:tracking-wider mt-4 md:mt-6 leading-loose px-2">
+                    No somos intermediarios. Poseemos nuestro propio laboratorio equipado con láseres de fibra óptica industriales y estaciones de microsoldadura térmica. Todo ocurre bajo un protocolo de seguridad absoluto.
+                </p>
+            </div>
+        </section>
+
+        <section class="px-6 pb-24">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                
+                <div class="tech-card-container fade-up delay-1" onclick="this.classList.toggle('flipped')">
+                    <div class="tech-card">
+                        <div class="tech-card-face tech-card-front">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-black border border-white/5 flex items-center justify-center mb-6 md:mb-8 text-tm-gold shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
                             </div>
-                            <div class="tech-card-face tech-card-back">
-                                <h3 class="font-cinzel text-sm font-black uppercase tracking-[0.2em] text-tm-gold mb-6 border-b border-tm-gold/30 pb-2 w-full">El Proceso</h3>
-                                <p class="text-xs text-gray-300 leading-loose font-light tracking-wide">
-                                    Extraemos el microchip original de tu plástico mediante un proceso térmico controlado. Luego, lo implantamos con precisión quirúrgica en el núcleo fresado de la tarjeta metálica. 
-                                    <br><br>
-                                    <span class="text-white font-bold">Resultado:</span> Funcionalidad absoluta en cajeros y terminales.
-                                </p>
-                            </div>
+                            <h3 class="font-cinzel text-base md:text-lg font-bold uppercase tracking-[0.2em] text-white">Trasplante EMV</h3>
+                            <p class="mt-4 md:mt-6 text-[7px] md:text-[8px] text-gray-500 uppercase tracking-[0.3em] font-light">Toca para escanear</p>
+                        </div>
+                        <div class="tech-card-face tech-card-back">
+                            <h3 class="font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-tm-gold mb-4 md:mb-6 border-b border-white/5 pb-3 md:pb-4 w-full">El Proceso</h3>
+                            <p class="text-[10px] md:text-[11px] text-gray-400 leading-loose font-light tracking-wide text-left">
+                                Extraemos el microchip original de tu plástico mediante un proceso térmico controlado. Luego, lo implantamos con precisión quirúrgica en el núcleo fresado de la tarjeta metálica. 
+                                <br><br>
+                                <span class="text-white font-normal block mt-2 border-t border-white/5 pt-2">Resultado: Funcionalidad absoluta en cajeros y terminales.</span>
+                            </p>
                         </div>
                     </div>
-
-                    <div class="tech-card-container" onclick="this.classList.toggle('flipped')">
-                        <div class="tech-card">
-                            <div class="tech-card-face tech-card-front border-tm-gold/50 shadow-[0_0_40px_rgba(212,175,55,0.1)]">
-                                <div class="absolute inset-0 bg-gradient-to-b from-tm-gold/10 to-transparent pointer-events-none"></div>
-                                <div class="w-24 h-24 rounded-full bg-black border border-tm-gold flex items-center justify-center mb-8 text-tm-gold shadow-[0_0_30px_rgba(212,175,55,0.5)] relative z-10">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                                </div>
-                                <h3 class="font-cinzel text-xl font-black uppercase tracking-[0.2em] text-tm-gold relative z-10 drop-shadow-md">Grabado Láser</h3>
-                                <p class="mt-4 text-[9px] text-tm-gold uppercase tracking-widest animate-pulse relative z-10">Toca para escanear</p>
-                            </div>
-                            <div class="tech-card-face tech-card-back">
-                                <h3 class="font-cinzel text-sm font-black uppercase tracking-[0.2em] text-tm-gold mb-6 border-b border-tm-gold/30 pb-2 w-full">Forjado con Luz</h3>
-                                <p class="text-xs text-gray-300 leading-loose font-light tracking-wide">
-                                    Utilizamos láser de fibra óptica industrial para quemar literalmente la superficie del metal. A diferencia de la tinta, este grabado es inalterable.
-                                    <br><br>
-                                    Tus datos bancarios quedan tallados en la estructura atómica de la aleación.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="tech-card-container" onclick="this.classList.toggle('flipped')">
-                        <div class="tech-card">
-                            <div class="tech-card-face tech-card-front">
-                                <div class="w-24 h-24 rounded-full bg-black border border-tm-gold/40 flex items-center justify-center mb-8 text-tm-gold shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-                                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
-                                </div>
-                                <h3 class="font-cinzel text-xl font-black uppercase tracking-[0.2em] text-white drop-shadow-md">Densidad Pura</h3>
-                                <p class="mt-4 text-[9px] text-tm-gold uppercase tracking-widest animate-pulse">Toca para escanear</p>
-                            </div>
-                            <div class="tech-card-face tech-card-back">
-                                <h3 class="font-cinzel text-sm font-black uppercase tracking-[0.2em] text-tm-gold mb-6 border-b border-tm-gold/30 pb-2 w-full">Impacto Táctil</h3>
-                                <p class="text-xs text-gray-300 leading-loose font-light tracking-wide">
-                                    Nuestras tarjetas pesan hasta 28 gramos, más de tres veces el peso de un plástico convencional. 
-                                    <br><br>
-                                    Esa masa física, combinada con la temperatura fría del metal puro, genera un impacto psicológico inmediato. <span class="italic text-tm-gold">El estatus se siente.</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
+
+                <div class="tech-card-container fade-up delay-2" onclick="this.classList.toggle('flipped')">
+                    <div class="tech-card">
+                        <div class="tech-card-face tech-card-front" style="border-top-color: rgba(212,175,55,0.5);">
+                            <div class="absolute inset-0 bg-gradient-to-b from-tm-gold/5 to-transparent pointer-events-none"></div>
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-black border border-tm-gold/30 flex items-center justify-center mb-6 md:mb-8 text-tm-gold shadow-[0_0_30px_rgba(212,175,55,0.1)] relative z-10">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <h3 class="font-cinzel text-base md:text-lg font-bold uppercase tracking-[0.2em] text-tm-gold relative z-10">Grabado Láser</h3>
+                            <p class="mt-4 md:mt-6 text-[7px] md:text-[8px] text-gray-500 uppercase tracking-[0.3em] font-light relative z-10">Toca para escanear</p>
+                        </div>
+                        <div class="tech-card-face tech-card-back">
+                            <h3 class="font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-tm-gold mb-4 md:mb-6 border-b border-white/5 pb-3 md:pb-4 w-full">Forjado con Luz</h3>
+                            <p class="text-[10px] md:text-[11px] text-gray-400 leading-loose font-light tracking-wide text-left">
+                                Utilizamos láser de fibra óptica industrial para quemar literalmente la superficie del metal. A diferencia de la tinta, este grabado es inalterable.
+                                <br><br>
+                                <span class="text-white font-normal block mt-2 border-t border-white/5 pt-2">Tus datos quedan tallados en la estructura atómica de la aleación.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-card-container fade-up delay-3" onclick="this.classList.toggle('flipped')">
+                    <div class="tech-card">
+                        <div class="tech-card-face tech-card-front">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-black border border-white/5 flex items-center justify-center mb-6 md:mb-8 text-tm-gold shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+                                <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                            </div>
+                            <h3 class="font-cinzel text-base md:text-lg font-bold uppercase tracking-[0.2em] text-white">Densidad Pura</h3>
+                            <p class="mt-4 md:mt-6 text-[7px] md:text-[8px] text-gray-500 uppercase tracking-[0.3em] font-light">Toca para escanear</p>
+                        </div>
+                        <div class="tech-card-face tech-card-back">
+                            <h3 class="font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-tm-gold mb-4 md:mb-6 border-b border-white/5 pb-3 md:pb-4 w-full">Impacto Táctil</h3>
+                            <p class="text-[10px] md:text-[11px] text-gray-400 leading-loose font-light tracking-wide text-left">
+                                Nuestras tarjetas pesan hasta 28 gramos, más de tres veces el peso de un plástico convencional. 
+                                <br><br>
+                                <span class="text-white font-normal block mt-2 border-t border-white/5 pt-2">Esa masa física, junto a la temperatura fría del metal, genera un impacto inmediato.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
     </main>
 
-    <footer class="relative z-20 glass-panel border-t border-tm-gold/10 w-full mt-auto">
-        <div class="max-w-7xl mx-auto px-6 py-12 md:py-16">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
-                <div class="flex flex-col items-center md:items-start space-y-4">
-                    <span class="text-gray-400 text-[10px] uppercase tracking-[0.5em] font-bold">Línea Exclusiva</span>
-                    <a href="tel:3146180655" class="group flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full border border-tm-gold/30 flex items-center justify-center bg-black/50 group-hover:bg-tm-gold/20 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.305-.88-.653-1.474-1.46-1.646-1.757-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        </div>
-                        <span class="font-cinzel text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#F3E5AB] via-[#D4AF37] to-[#997a00] bg-clip-text text-transparent group-hover:brightness-125 transition-all duration-500 drop-shadow-md">+57 314 618 0655</span>
-                    </a>
+    <footer class="relative z-20 border-t border-white/5 bg-black w-full pt-12 md:pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12 text-center md:text-left">
+                
+                <div class="flex flex-col items-center md:items-start">
+                    <svg viewBox="0 0 100 100" class="w-8 h-8 mb-3">
+                        <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M45 40 L55 40 L55 60 M45 50 L55 50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    <span class="font-cinzel text-base md:text-lg tracking-[0.3em] text-white">B S</span>
+                    <span class="text-[6px] md:text-[7px] uppercase tracking-[0.4em] text-gray-500 mt-1">Premium Cards</span>
                 </div>
-                <div class="flex flex-col items-center md:items-end space-y-6">
-                    <span class="text-gray-400 text-[10px] uppercase tracking-[0.5em] font-bold">Nuestras Redes</span>
-                    <div class="flex items-center gap-6">
-                        <a href="https://www.facebook.com/share/1AefoxeC9U/?mibextid=wwXIfr" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
-                        </a>
-                        <a href="https://www.instagram.com/premiumcardsbs?igsh=MXdrNzJtNGY5b3JhaQ==" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        </a>
-                        <a href="https://www.tiktok.com/@bs_premium.cards?_r=1&_t=ZS-94pGyL10lzF" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
-                        </a>
+
+                <div class="flex flex-col items-center md:items-start space-y-3 md:space-y-4">
+                    <span class="text-gray-600 text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-light">Atención Élite</span>
+                    <a href="tel:3146180655" class="text-white text-base md:text-lg font-light tracking-widest hover:text-tm-gold transition-colors">+57 314 618 0655</a>
+                    <span class="text-gray-500 text-[9px] md:text-[10px] font-light">Cali, Colombia</span>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end space-y-3 md:space-y-4">
+                    <span class="text-gray-600 text-[7px] md:text-[8px] uppercase tracking-[0.4em] font-light">Redes Exclusivas</span>
+                    <div class="flex items-center gap-5 md:gap-6">
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors p-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors p-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors p-2"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg></a>
                     </div>
                 </div>
             </div>
-            <div class="border-t border-tm-gold/10 mt-12 pt-8 text-center">
-                <p class="text-gray-500 text-[8px] uppercase tracking-[0.5em]">BS Premium Cards © 2026 | Cali, Colombia - Todos los derechos reservados.</p>
+            
+            <div class="border-t border-white/5 pt-6 text-center">
+                <p class="text-[#444] text-[7px] md:text-[8px] uppercase tracking-[0.4em]">© 2026 BS Premium Cards. El arte del metal.</p>
             </div>
         </div>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        let bgScene, bgCamera, bgRenderer, bgParticles;
-        function initBackground3D() {
-            bgScene = new THREE.Scene(); bgCamera = new THREE.Camera(); bgCamera.position.z = 1;
-            bgRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            bgRenderer.setSize(window.innerWidth, window.innerHeight); bgRenderer.setPixelRatio(window.devicePixelRatio);
-            document.getElementById('threejs-canvas-container').appendChild(bgRenderer.domElement);
+        let scene, camera, renderer, flyingCards = [];
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0;
+
+        function createCardTexture(type) {
+            const canvas = document.createElement('canvas'); 
+            canvas.width = 512; canvas.height = 320; // Resolución reducida para optimizar móviles
+            const ctx = canvas.getContext('2d');
             
-            const geometry = new THREE.BufferGeometry(); const vertices = []; const vertexColors = [];
-            const goldColors = [new THREE.Color(0xd4af37), new THREE.Color(0xf3e5ab), new THREE.Color(0xffd700)];
-            for (let i = 0; i < (window.innerWidth * window.innerHeight)/1000; i++) {
-                vertices.push(THREE.MathUtils.randFloatSpread(2), THREE.MathUtils.randFloatSpread(2), THREE.MathUtils.randFloatSpread(2));
-                const color = goldColors[Math.floor(Math.random() * goldColors.length)]; vertexColors.push(color.r, color.g, color.b);
+            let baseColor = type === 'gold' ? '#111' : '#050505';
+            ctx.fillStyle = baseColor; ctx.fillRect(0, 0, 512, 320);
+
+            const chipX = 60, chipY = 140, chipW = 70, chipH = 55;
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.roundRect(chipX+1, chipY+1, chipW, chipH, 4); ctx.fill();
+            const chipGrad = ctx.createLinearGradient(chipX, chipY, chipX+chipW, chipY+chipH);
+            chipGrad.addColorStop(0, '#E5C158'); chipGrad.addColorStop(0.5, '#D4AF37'); chipGrad.addColorStop(1, '#8B6508');
+            ctx.fillStyle = chipGrad; ctx.beginPath(); ctx.roundRect(chipX, chipY, chipW, chipH, 4); ctx.fill();
+
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        function init3D() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x030303, 0.015);
+
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 45;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('threejs-canvas-container').appendChild(renderer.domElement);
+
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3); scene.add(ambient);
+            const light1 = new THREE.PointLight(0xffffff, 5, 150); light1.position.set(20, 20, 20); scene.add(light1);
+            const light2 = new THREE.PointLight(0xD4AF37, 4, 150); light2.position.set(-20, -20, 20); scene.add(light2);
+
+            const isMobile = window.innerWidth < 768;
+            const cardCount = isMobile ? 15 : 40; // Ajuste drástico para rendimiento móvil
+
+            const geometry = new THREE.BoxGeometry(8.5, 5.3, 0.08); 
+            const matDark = new THREE.MeshPhysicalMaterial({ map: createCardTexture('dark'), metalness: 0.9, roughness: 0.2, clearcoat: 1.0 });
+            const matGold = new THREE.MeshPhysicalMaterial({ map: createCardTexture('gold'), metalness: 1.0, roughness: 0.1, color: 0xffdd88 });
+
+            for (let i = 0; i < cardCount; i++) {
+                const mesh = new THREE.Mesh(geometry, Math.random() > 0.5 ? matDark : matGold);
+                mesh.position.set((Math.random()-0.5)*150, (Math.random()-0.5)*150, (Math.random()-0.5)*60 - 10);
+                mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+                scene.add(mesh);
+                flyingCards.push({ mesh, speedY: 0.01 + Math.random()*0.03, rotX: (Math.random()-0.5)*0.015, rotY: (Math.random()-0.5)*0.015 });
             }
             
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3)); geometry.setAttribute('color', new THREE.Float32BufferAttribute(vertexColors, 3));
-            const material = new THREE.PointsMaterial({ size: 0.005, vertexColors: true, blending: THREE.AdditiveBlending, depthTest: false, transparent: true, opacity: 0.8 });
-            bgParticles = new THREE.Points(geometry, material); bgScene.add(bgParticles);
-            window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth/window.innerHeight; bgRenderer.setSize(window.innerWidth, window.innerHeight); }, false);
+            document.addEventListener('mousemove', (event) => {
+                targetX = (event.clientX - window.innerWidth / 2) * 0.03;
+                targetY = (event.clientY - window.innerHeight / 2) * 0.03;
+            });
         }
-        function animateBackground3D() { requestAnimationFrame(animateBackground3D); bgParticles.rotation.y += 0.0005; bgParticles.rotation.x += 0.0001; bgRenderer.render(bgScene, bgCamera); }
-        initBackground3D(); animateBackground3D();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            mouseX += (targetX - mouseX) * 0.05; mouseY += (targetY - mouseY) * 0.05;
+            camera.position.x = mouseX; camera.position.y = -mouseY; camera.lookAt(scene.position);
+
+            flyingCards.forEach(card => {
+                card.mesh.position.y += card.speedY; card.mesh.rotation.x += card.rotX; card.mesh.rotation.y += card.rotY;
+                if (card.mesh.position.y > 80) {
+                    card.mesh.position.y = -80; card.mesh.position.x = (Math.random() - 0.5) * 150;
+                }
+            });
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+        });
+
+        // Intersección Observer para animaciones On-Scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if(entry.isIntersecting) { entry.target.style.animationPlayState = 'running'; }});
+        }, { threshold: 0.1 });
+
+        window.addEventListener('load', () => {
+            init3D(); animate();
+            document.querySelectorAll('.fade-up').forEach(el => { el.style.animationPlayState = 'paused'; observer.observe(el); });
+            setTimeout(() => {
+                const loader = document.getElementById('stark-loader');
+                loader.style.opacity = '0'; loader.style.visibility = 'hidden';
+                setTimeout(() => { loader.remove(); }, 1000);
+            }, 2000);
+        });
     </script>
 </body>
 </html>
