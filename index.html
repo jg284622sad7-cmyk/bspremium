@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800;900&family=Montserrat:wght@200;300;400;700;900&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,143 +15,188 @@
             theme: { 
                 extend: { 
                     colors: { 
-                        'tm-gold': '#D4AF37', 'tm-gold-light': '#F3E5AB', 'tm-black': '#050505', 'tm-exotic': '#4c0099',
+                        'tm-gold': '#D4AF37', 
+                        'tm-gold-light': '#FDF5A9', 
+                        'tm-gold-dark': '#8B6508', 
+                        'tm-black': '#050505', 
+                        'tm-charcoal': '#111111',
                     },
                     fontFamily: { 
                         'playfair': ['"Playfair Display"', 'serif'],
                         'sans': ['Montserrat', 'sans-serif'],
                         'cinzel': ['Cinzel', 'serif'],
                     },
-                    animation: { 'shine': 'textShine 6s linear infinite', 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                    animation: { 
+                        'shine': 'textShine 8s linear infinite', 
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float-slow': 'floating 6s ease-in-out infinite',
+                        'scroll-bounce': 'scrollBounce 2s infinite'
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
                 } 
             } 
         }
     </script>
 
     <style>
-        body { background-color: #030303; color: white; margin: 0; overflow-x: hidden; }
+        body { 
+            background-color: #030303; 
+            color: white; 
+            margin: 0; 
+            overflow-x: hidden; 
+            font-family: 'Montserrat', sans-serif; 
+            /* Textura sutil de ruido de fondo para lujo */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+        }
 
         /* ========================================== */
-        /* LOADER HIPERREALISTA                       */
+        /* LOADER EXCLUSIVO                           */
         /* ========================================== */
         #stark-loader { position: fixed; inset: 0; z-index: 9999; background-color: #030303; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s; }
-        .loader-card-scene { width: 300px; height: 190px; perspective: 1500px; margin-bottom: 3rem; z-index: 10; }
-        .loader-card { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: starkCardFlip 4s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95); border-radius: 14px; }
-        .loader-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; overflow: hidden; }
-        .loader-front { background: linear-gradient(135deg, #181818 0%, #2a2a2a 40%, #111111 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 0 30px rgba(0,0,0,0.8); transform: rotateY(0deg) translateZ(1px); }
-        .loader-back { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); transform: rotateY(180deg) translateZ(1px); display: flex; flex-direction: column; }
-        .loader-shine { position: absolute; top: -150%; left: -150%; width: 400%; height: 400%; background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%); animation: lightSweep 4s infinite linear; pointer-events: none; z-index: 50; }
-        @keyframes lightSweep { 0% { transform: translate(-30%, -30%); } 50% { transform: translate(15%, 15%); } 100% { transform: translate(40%, 40%); } }
-        @keyframes starkCardFlip { 0% { transform: rotateY(0deg) translateY(0); box-shadow: 0 15px 30px rgba(0,0,0,0.8); } 50% { transform: rotateY(180deg) translateY(-20px); box-shadow: 0 35px 50px rgba(212, 175, 55, 0.15); } 100% { transform: rotateY(360deg) translateY(0); box-shadow: 0 15px 30px rgba(0,0,0,0.8); } }
-        .embossed-text-css { text-shadow: 1px 1px 0px rgba(0,0,0,0.9), -1px -1px 0px rgba(255,255,255,0.3), 2px 2px 4px rgba(0,0,0,0.8); }
-        .loader-bar-container { width: 240px; height: 2px; background: rgba(255,255,255,0.1); overflow: hidden; margin-top: 1rem; position: relative; z-index: 1; }
-        .loader-bar { height: 100%; background: #D4AF37; width: 0%; animation: starkLoadBar 3s ease-in-out forwards; box-shadow: 0 0 15px #D4AF37; }
-        @keyframes starkLoadBar { 0% { width: 0%; } 40% { width: 60%; } 100% { width: 100%; } }
-
-        /* ========================================== */
-        /* NEBULOSA EXÓTICA Y ENTORNO HIPNÓTICO       */
-        /* ========================================== */
-        #threejs-canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 1; }
-        .nebula-bg { position: fixed; inset: 0; z-index: -3; background: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(76, 0, 153, 0.08) 0%, transparent 50%); animation: nebulaBreath 12s infinite alternate ease-in-out; }
-        @keyframes nebulaBreath { 0% { opacity: 0.4; transform: scale(1); } 100% { opacity: 1; transform: scale(1.15); } }
-        .overlay-dark { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%); z-index: -1; pointer-events: none; }
+        .loader-logo-container { width: 60px; height: 60px; position: relative; margin-bottom: 2rem; }
+        .loader-ring { position: absolute; inset: 0; border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 50%; border-top-color: #D4AF37; animation: spin 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; }
+        .loader-ring-inner { position: absolute; inset: 4px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 50%; border-bottom-color: #FDF5A9; animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite reverse; }
+        .loader-bar-container { width: 200px; height: 1px; background: rgba(255,255,255,0.05); overflow: hidden; margin-top: 1.5rem; position: relative; }
+        .loader-bar { height: 100%; background: linear-gradient(90deg, transparent, #D4AF37, transparent); width: 0%; animation: starkLoadBar 2.5s ease-in-out forwards; }
         
-        /* 🚨 EFECTOS DE CRISTAL DE ALTA GAMA 🚨 */
-        .glass-panel { background: rgba(10, 10, 10, 0.45); backdrop-filter: blur(24px); border: 1px solid rgba(212, 175, 55, 0.15); box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.05), 0 30px 60px rgba(0,0,0,0.9); transition: all 0.5s ease; }
-        .glass-panel:hover { border-color: rgba(212, 175, 55, 0.3); box-shadow: inset 0 0 40px rgba(212, 175, 55, 0.1), 0 40px 80px rgba(0,0,0,0.95); }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes starkLoadBar { 0% { width: 0%; margin-left: 0; } 50% { width: 100%; margin-left: 0; } 100% { width: 100%; margin-left: 100%; } }
 
-        /* 🚨 TEXTOS DE ORO LÍQUIDO ANIMADO 🚨 */
-        .text-gradient-gold { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: textShine 5s linear infinite; }
+        /* ========================================== */
+        /* ENTORNO 3D Y NEBULOSA                      */
+        /* ========================================== */
+        #threejs-canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; opacity: 0.85; mix-blend-mode: screen; }
+        .nebula-bg { position: fixed; inset: 0; z-index: -3; background: radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(20, 20, 30, 0.5) 0%, transparent 50%); }
+        .overlay-dark { position: fixed; inset: 0; background: linear-gradient(to bottom, rgba(3,3,3,0.4) 0%, rgba(3,3,3,0.8) 50%, rgba(3,3,3,1) 100%); z-index: -1; pointer-events: none; }
+        
+        /* 🚨 EFECTOS DE CRISTAL Y METAL MODERNOS 🚨 */
+        .glass-nav {
+            background: rgba(3, 3, 3, 0.6); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            transition: all 0.4s ease;
+        }
+
+        .metal-panel {
+            background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(5,5,5,0.9) 100%);
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.4s ease;
+        }
+        .metal-panel:hover {
+            border-color: rgba(212,175,55,0.2);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(212,175,55,0.1);
+        }
+
+        /* 🚨 TIPOGRAFÍA EXÓTICA 🚨 */
+        .text-gradient-gold { 
+            background: linear-gradient(to right, #8B6508, #D4AF37, #FDF5A9, #D4AF37, #8B6508); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-size: 200% auto; 
+            animation: textShine 8s linear infinite; 
+        }
         @keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-        .btn-action { background: linear-gradient(135deg, #d4af37 0%, #ffdf73 50%, #997a00 100%); background-size: 200% auto; color: black; animation: shine 3s linear infinite; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 0 30px rgba(212, 175, 55, 0.4), inset 0 0 10px rgba(255,255,255,0.5); }
-        .btn-action:hover { transform: scale(1.08) translateY(-5px); box-shadow: 0 15px 50px rgba(212, 175, 55, 0.8), inset 0 0 20px rgba(255,255,255,0.9); letter-spacing: 0.3em; }
-        
-        ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        /* Botón ultra premium */
+        .btn-exotic {
+            position: relative;
+            background: transparent;
+            color: #D4AF37;
+            overflow: hidden;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .btn-exotic::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-exotic:hover {
+            border-color: #D4AF37;
+            color: #FDF5A9;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+            letter-spacing: 0.4em;
+        }
+        .btn-exotic:hover::before { left: 100%; }
 
-        .title-anim { opacity: 0; animation: exoticReveal 2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; }
-        .desc-anim { opacity: 0; animation: exoticUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards; }
-        .btn-anim { opacity: 0; animation: exoticUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards; }
-        
-        .float-slow { animation: floating 8s ease-in-out infinite; } .float-medium { animation: floating 5s ease-in-out infinite; } .float-delay { animation: floating 6s ease-in-out infinite 2s; }
-        @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
-        @keyframes exoticReveal { 0% { opacity: 0; transform: scale(0.9) translateY(40px); filter: blur(15px) brightness(2); } 100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0) brightness(1); } }
-        @keyframes exoticUp { 0% { opacity: 0; transform: translateY(40px); filter: blur(5px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        ::-webkit-scrollbar { width: 3px; } 
+        ::-webkit-scrollbar-track { background: #030303; } 
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 10px; } 
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
 
-        .logo-gravity { animation: superGravity 12s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate; transform-style: preserve-3d; perspective: 1000px; }
-        @keyframes superGravity { 0% { transform: translateY(0px) rotateX(5deg) rotateY(-5deg) scale(1); filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); } 50% { transform: translateY(-10px) rotateX(-2deg) rotateY(6deg) scale(1.03); filter: drop-shadow(0 20px 30px rgba(212,175,55,0.7)); } 100% { transform: translateY(5px) rotateX(3deg) rotateY(-3deg) scale(0.98); filter: drop-shadow(0 10px 15px rgba(212,175,55,0.4)); } }
+        /* Animaciones de entrada */
+        .fade-up { opacity: 0; transform: translateY(30px); filter: blur(5px); animation: fadeUpAnim 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.2s; } .delay-2 { animation-delay: 0.4s; } .delay-3 { animation-delay: 0.6s; }
         
-        .text-shadow-heavy { text-shadow: 0 15px 40px rgba(0,0,0,1), 0 5px 15px rgba(0,0,0,0.9); }
+        @keyframes fadeUpAnim { 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes scrollBounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
 
-        .luxury-link { position: relative; transition: all 0.3s ease; }
-        .luxury-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #D4AF37; transition: width 0.3s ease; box-shadow: 0 0 5px #D4AF37; }
-        .luxury-link:hover { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        .luxury-link:hover::after { width: 100%; }
-        
-        .gold-line { background: linear-gradient(90deg, transparent, #D4AF37, transparent); height: 1px; width: 100%; margin: 2rem 0; }
-        
-        /* 🚨 ICONOS TRUST BADGE 🚨 */
-        .trust-icon { filter: grayscale(100%) opacity(0.5); transition: all 0.4s ease; height: 24px; }
-        .trust-icon:hover { filter: grayscale(0%) opacity(1); transform: scale(1.1); drop-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        /* Líneas divisorias estéticas */
+        .line-lux { height: 1px; width: 1px; flex-grow: 1; background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent); }
+
+        /* Tarjetas de metales (Sección Colección) */
+        .metal-card { position: relative; overflow: hidden; cursor: pointer; height: 400px; border-radius: 16px; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+        .metal-card .bg-image { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 1s ease; opacity: 0.4; filter: grayscale(100%); }
+        .metal-card:hover .bg-image { transform: scale(1.05); opacity: 0.7; filter: grayscale(0%); }
+        .metal-card .content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%); transform: translateY(20px); transition: transform 0.4s ease; }
+        .metal-card:hover .content { transform: translateY(0); }
+        .metal-card::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; pointer-events: none; transition: border-color 0.4s ease; }
+        .metal-card:hover::after { border-color: rgba(212,175,55,0.4); }
+
     </style>
 </head>
-<body class="font-sans flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
 
     <div id="stark-loader">
-        <div class="loader-card-scene">
-            <div class="loader-card">
-                <div class="loader-face loader-front flex flex-col justify-between p-6">
-                    <div class="loader-shine"></div>
-                    <div class="relative z-10 w-full flex flex-col items-center pt-2">
-                        <h1 class="font-cinzel font-900 text-3xl tracking-[0.2em] embossed-text-css text-center leading-none text-gradient-gold">BS PREMIUM</h1>
-                        <p class="text-tm-gold-light font-sans font-bold text-[8px] tracking-[0.8em] uppercase mt-2 embossed-text-css">Cards</p>
-                    </div>
-                    <div class="relative z-10 w-12 h-9 bg-gradient-to-br from-[#d4af37] via-[#f3e5ab] to-[#997a00] rounded-md border border-black/80 shadow-[inset_0_0_3px_rgba(255,255,255,0.7)] flex flex-col justify-evenly px-[3px] mt-2">
-                        <div class="w-full h-[1px] bg-black/40"></div><div class="w-full h-[1px] bg-black/40"></div><div class="w-full h-[1px] bg-black/40"></div>
-                    </div>
-                    <div class="relative z-10 w-full mt-auto">
-                        <div class="font-mono text-[#aaaaaa] text-lg tracking-[0.15em] embossed-text-css flex justify-between w-[95%]">
-                            <span>4230</span><span>1234</span><span>5678</span><span>9010</span>
-                        </div>
-                        <div class="flex justify-between items-end mt-2">
-                            <span class="font-sans text-[10px] text-gray-400 tracking-[0.25em] uppercase font-bold embossed-text-css">SANTIAGO RAMOS</span>
-                            <span class="font-cinzel text-[14px] text-tm-gold font-bold drop-shadow-md">VIP</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="loader-face loader-back">
-                    <div class="w-full h-12 bg-[#050505] mt-5 opacity-90 shadow-[inset_0_-2px_5px_rgba(0,0,0,1)] border-b border-white/5"></div>
-                    <div class="w-[85%] h-8 bg-gray-200 mt-4 mx-auto rounded-sm flex items-center px-4 opacity-90 shadow-inner">
-                        <div class="w-full border-b border-gray-400 opacity-50 relative"><span class="absolute right-0 -top-[16px] text-black font-mono text-[11px] italic font-bold">CVV ***</span></div>
-                    </div>
-                    <span class="text-gray-500 text-[7px] uppercase tracking-[0.3em] text-center mt-auto mb-4 font-bold">Ingeniería Metálica Autorizada</span>
-                </div>
-            </div>
+        <div class="loader-logo-container">
+            <div class="loader-ring"></div>
+            <div class="loader-ring-inner"></div>
+            <svg class="absolute inset-0 m-auto w-4 h-4 text-tm-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM12 6l6 6-6 6-6-6 6-6z"/>
+            </svg>
         </div>
-        <div class="flex flex-col items-center relative z-20">
-            <p class="text-tm-gold text-[10px] tracking-[0.5em] uppercase font-bold animate-pulse-slow">Conectando con la Élite...</p>
-            <div class="loader-bar-container"><div class="loader-bar"></div></div>
-        </div>
+        <p class="text-gray-500 text-[8px] tracking-[0.4em] uppercase font-light">Iniciando Experiencia</p>
+        <div class="loader-bar-container"><div class="loader-bar"></div></div>
     </div>
 
     <div class="nebula-bg"></div>
     <div id="threejs-canvas-container"></div>
     <div class="overlay-dark"></div>
 
-    <nav class="fixed top-0 w-full z-[100] glass-panel border-b border-tm-gold/10 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+    <nav class="fixed top-0 w-full z-[100] glass-nav">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             
-            <a href="index.html" class="font-cinzel text-xl md:text-2xl font-bold tracking-widest text-white hover:text-tm-gold transition-colors">BS <span class="text-tm-gold">PREMIUM</span></a>
+            <a href="index.html" class="flex items-center gap-4 group">
+                <div class="relative w-8 h-8 flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" class="w-full h-full transform group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        <defs>
+                            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FDF5A9" />
+                                <stop offset="50%" stop-color="#D4AF37" />
+                                <stop offset="100%" stop-color="#8B6508" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M50 5 L95 50 L50 95 L5 50 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1" opacity="0.5"/>
+                        <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+                        <path d="M45 40 L55 40 L55 60 M45 50 L55 50" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="font-cinzel text-sm font-light tracking-[0.3em] text-white group-hover:text-tm-gold transition-colors duration-500">B S</span>
+                    <span class="text-[6px] uppercase tracking-[0.5em] text-gray-500 mt-[2px]">Premium Cards</span>
+                </div>
+            </a>
             
-            <div class="flex w-full md:w-auto order-3 md:order-none justify-center gap-4 md:gap-8 items-center mt-4 md:mt-0">
-                <a href="index.html" class="text-[10px] uppercase tracking-[0.3em] text-tm-gold transition-colors font-bold text-shadow-heavy">Inicio</a>
-                <span class="text-tm-gold/30 text-xs">♦</span>
-                <a href="tecnologia.html" class="text-[10px] uppercase tracking-[0.3em] text-gray-300 hover:text-tm-gold transition-colors font-bold text-shadow-heavy">Tecnología</a>
-                <span class="text-tm-gold/30 text-xs">♦</span>
-                <a href="galeria.html" class="text-[10px] uppercase tracking-[0.3em] text-gray-300 hover:text-tm-gold transition-colors font-bold text-shadow-heavy">Galería VIP</a>
+            <div class="hidden md:flex gap-10 items-center">
+                <a href="tecnologia.html" class="text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors font-light">Tecnología</a>
+                <a href="galeria.html" class="text-[9px] uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors font-light">Galería VIP</a>
             </div>
 
-            <a href="ventas.html" class="text-tm-gold border border-tm-gold/50 px-4 md:px-6 py-2 text-[10px] uppercase tracking-[0.4em] rounded-full transition-all font-bold hover:bg-tm-gold hover:text-black shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
+            <a href="ventas.html" class="text-tm-gold border border-tm-gold/20 px-6 py-2 text-[8px] uppercase tracking-[0.3em] transition-all hover:bg-tm-gold hover:text-black">
                 Personalizar
             </a>
             
@@ -161,125 +206,184 @@
     <main class="relative z-10 flex-grow pt-32">
         
         <section class="min-h-[85vh] flex flex-col justify-center items-center px-6 relative">
-            <div class="max-w-6xl w-full text-center relative z-10 float-slow mt-10 md:mt-0"> 
+            <div class="max-w-5xl w-full text-center relative z-10 animate-float-slow mt-10 md:mt-0"> 
                 
-                <h2 class="text-white tracking-[0.8em] uppercase text-xs md:text-sm mb-6 font-bold drop-shadow-[0_0_20px_rgba(255,255,255,0.5)] text-shadow-heavy">
-                    El Estatus No Se Dice
-                </h2>
+                <div class="flex items-center justify-center gap-4 mb-8 fade-up">
+                    <div class="line-lux"></div>
+                    <span class="text-gray-400 tracking-[0.6em] uppercase text-[9px] font-light">El Estatus Silencioso</span>
+                    <div class="line-lux"></div>
+                </div>
                 
-                <h1 class="font-cinzel text-5xl md:text-[7.5rem] font-black mb-8 leading-none drop-shadow-[0_25px_35px_rgba(0,0,0,1)] title-anim float-medium tracking-tight">
-                    SE MUESTRA EN <br class="hidden md:block"><span class="text-gradient-gold">METAL PURO.</span>
+                <h1 class="font-cinzel text-4xl md:text-7xl font-bold mb-6 leading-tight fade-up delay-1">
+                    SE MUESTRA EN <br>
+                    <span class="text-gradient-gold italic font-playfair pr-4">Metal Puro.</span>
                 </h1>
                 
-                <p class="text-gray-300 text-sm md:text-xl tracking-widest font-light max-w-4xl mx-auto mb-12 leading-loose desc-anim text-shadow-heavy">
-                    La autoridad absoluta en personalización bancaria. Ingeniería EMV fusionada con 
-                    <span class="text-tm-gold font-bold drop-shadow-[0_0_5px_rgba(212,175,55,0.8)]">Titanio, Oro 24K y Acero Quirúrgico</span>. 
+                <p class="text-gray-400 text-xs md:text-sm tracking-[0.2em] font-light max-w-2xl mx-auto mb-12 leading-loose fade-up delay-2">
+                    Ingeniería EMV fusionada con metales de grado militar. Transformamos tu plástico común en una obra de arte definitiva.
                 </p>
 
-                <div class="flex flex-col justify-center items-center btn-anim gap-8">
-                    <a href="ventas.html" class="btn-action px-14 py-6 rounded-full font-black uppercase tracking-[0.3em] text-xs flex items-center gap-4">
-                        Forjar mi Tarjeta
+                <div class="flex justify-center fade-up delay-3">
+                    <a href="ventas.html" class="btn-exotic px-10 py-4 uppercase tracking-[0.3em] text-[10px] flex items-center gap-4">
+                        <span>Forjar mi Tarjeta</span>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>
+                </div>
+            </div>
+
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+                <span class="text-[7px] uppercase tracking-[0.4em] text-gray-500">Descubre</span>
+                <div class="w-[1px] h-12 bg-gradient-to-b from-tm-gold/50 to-transparent animate-scroll-bounce"></div>
+            </div>
+        </section>
+
+        <section class="py-24 px-6 relative z-10" id="metals">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 fade-up">
+                    <div>
+                        <h3 class="text-tm-gold text-[10px] tracking-[0.5em] uppercase mb-2">La Colección</h3>
+                        <h2 class="font-cinzel text-3xl md:text-4xl text-white">MATERIALES ÉLITE</h2>
                     </div>
+                    <p class="text-gray-500 text-[10px] tracking-[0.2em] uppercase max-w-xs mt-4 md:mt-0 font-light">Aleaciones seleccionadas para dominar cualquier mesa.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="metal-card bg-gray-900 fade-up delay-1">
+                        <div class="bg-image" style="background: radial-gradient(circle at center, #3a2a0d 0%, #111 100%);"></div>
+                        <div class="content">
+                            <span class="text-tm-gold text-[8px] uppercase tracking-[0.4em] mb-1 block">01 / Au</span>
+                            <h4 class="font-cinzel text-xl text-white mb-2">Oro 24K Plated</h4>
+                            <p class="text-gray-400 text-[10px] font-light leading-relaxed opacity-0 transform translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">El máximo símbolo de estatus. Acabado espejo pulido a mano que refleja el éxito puro.</p>
+                        </div>
+                    </div>
+                    <div class="metal-card bg-gray-900 fade-up delay-2">
+                        <div class="bg-image" style="background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);"></div>
+                        <div class="content">
+                            <span class="text-gray-400 text-[8px] uppercase tracking-[0.4em] mb-1 block">02 / Ti</span>
+                            <h4 class="font-cinzel text-xl text-white mb-2">Titanio Oscuro</h4>
+                            <p class="text-gray-400 text-[10px] font-light leading-relaxed opacity-0 transform translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">Discreción y poder. Un acabado mate sigiloso que pesa en la mano y resiste el paso del tiempo.</p>
+                        </div>
+                    </div>
+                    <div class="metal-card bg-gray-900 fade-up delay-3">
+                        <div class="bg-image" style="background: radial-gradient(circle at center, #333 0%, #111 100%);"></div>
+                        <div class="content">
+                            <span class="text-gray-300 text-[8px] uppercase tracking-[0.4em] mb-1 block">03 / Fe</span>
+                            <h4 class="font-cinzel text-xl text-white mb-2">Acero Quirúrgico</h4>
+                            <p class="text-gray-400 text-[10px] font-light leading-relaxed opacity-0 transform translate-y-4 transition-all duration-500 delay-100 group-hover:opacity-100 group-hover:translate-y-0">Brillo cepillado industrial. Moderno, indestructible y con una textura inconfundible al tacto.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <section class="py-24 px-6 max-w-7xl mx-auto relative z-10">
-            <div class="glass-panel p-10 md:p-16 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.9)] border border-tm-gold/20">
-                <div class="text-center mb-16">
-                    <h3 class="text-tm-gold tracking-[0.5em] uppercase text-xs font-bold mb-4">Privacidad Militar</h3>
-                    <h2 class="font-cinzel text-4xl md:text-5xl font-bold leading-tight">CERO RIESGOS. <br>CERO CLONACIÓN.</h2>
-                    <div class="gold-line mx-auto w-1/4"></div>
+            <div class="metal-panel p-10 md:p-20 rounded-[2rem] relative overflow-hidden fade-up">
+                <div class="absolute -right-20 -top-20 opacity-5 pointer-events-none">
+                    <svg class="w-96 h-96 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                </div>
+
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="text-gray-500 tracking-[0.5em] uppercase text-[9px] font-light mb-4">Protocolo de Seguridad</h3>
+                    <h2 class="font-cinzel text-2xl md:text-4xl font-light text-white">PRIVACIDAD <span class="font-bold">INQUEBRANTABLE</span></h2>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-20 h-20 rounded-full border border-tm-gold/40 flex items-center justify-center bg-black/50 group-hover:bg-tm-gold/10 transition-colors duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] mb-6">
-                            <svg class="w-8 h-8 text-tm-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <div class="w-12 h-12 mb-6 text-tm-gold/50 group-hover:text-tm-gold transition-colors duration-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
-                        <h4 class="font-playfair text-xl text-white font-bold mb-3">Trasplante Físico</h4>
-                        <p class="text-xs text-gray-400 leading-relaxed font-light">Extraemos tu chip y banda original. Tu información nunca entra a una computadora ni toca la nube.</p>
+                        <h4 class="font-sans text-xs uppercase tracking-[0.2em] text-white mb-3">Trasplante Físico</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light">El chip de tu plástico original se extrae e injerta manualmente en el metal. Tu información nunca entra a una base de datos.</p>
                     </div>
 
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-20 h-20 rounded-full border border-tm-gold/40 flex items-center justify-center bg-black/50 group-hover:bg-tm-gold/10 transition-colors duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] mb-6">
-                            <svg class="w-8 h-8 text-tm-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <div class="w-12 h-12 mb-6 text-tm-gold/50 group-hover:text-tm-gold transition-colors duration-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <h4 class="font-playfair text-xl text-white font-bold mb-3">Garantía Bancaria</h4>
-                        <p class="text-xs text-gray-400 leading-relaxed font-light">Mantenemos intacta la funcionalidad Contactless (NFC) en tu teléfono, cajeros y puntos de venta.</p>
+                        <h4 class="font-sans text-xs uppercase tracking-[0.2em] text-white mb-3">Garantía NFC</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light">Configura tu tarjeta en Apple Pay o Google Wallet antes del envío. Mantienes la funcionalidad *contactless* en tu smartphone al 100%.</p>
                     </div>
 
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-20 h-20 rounded-full border border-tm-gold/40 flex items-center justify-center bg-black/50 group-hover:bg-tm-gold/10 transition-colors duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] mb-6">
-                            <svg class="w-8 h-8 text-tm-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                        <div class="w-12 h-12 mb-6 text-tm-gold/50 group-hover:text-tm-gold transition-colors duration-500">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         </div>
-                        <h4 class="font-playfair text-xl text-white font-bold mb-3">Privacidad Óptica</h4>
-                        <p class="text-xs text-gray-400 leading-relaxed font-light">Tus números de cuenta y CVV van grabados a láser únicamente en el reverso. El frente es solo arte y estatus.</p>
+                        <h4 class="font-sans text-xs uppercase tracking-[0.2em] text-white mb-3">Minimalismo Frontal</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light">Números de cuenta y CVV son grabados a láser en el reverso de la tarjeta. El frente queda reservado únicamente para tu arte.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-24 px-6 max-w-6xl mx-auto relative z-10">
-            <div class="text-center mb-16">
-                <h2 class="font-cinzel text-3xl md:text-5xl text-white font-bold text-shadow-heavy">EL PROCESO VIP</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-black/40 border border-gray-800 p-8 rounded-[2rem] text-center hover:border-tm-gold/50 transition-all duration-300">
-                    <div class="text-tm-gold font-cinzel text-3xl font-black mb-4">01</div>
-                    <h4 class="font-bold text-sm tracking-widest uppercase text-white mb-2">Diseño</h4>
-                    <p class="text-[10px] text-gray-400 tracking-wide">Eliges tu metal y configuras tu arte exclusivo en nuestro simulador 3D.</p>
+        <section class="py-24 px-6 relative z-10" id="experience">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16">
+                <div class="w-full md:w-1/2 fade-up">
+                    <div class="relative w-full aspect-square border border-white/10 rounded-full flex items-center justify-center p-10">
+                        <div class="absolute inset-0 border border-tm-gold/20 rounded-full scale-90 animate-pulse-slow"></div>
+                        <div class="w-full h-full bg-gradient-to-tr from-gray-900 to-black rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(212,175,55,0.05)]">
+                            <svg class="w-20 h-20 text-tm-gold/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="0.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-black/40 border border-gray-800 p-8 rounded-[2rem] text-center hover:border-tm-gold/50 transition-all duration-300">
-                    <div class="text-tm-gold font-cinzel text-3xl font-black mb-4">02</div>
-                    <h4 class="font-bold text-sm tracking-widest uppercase text-white mb-2">Recepción</h4>
-                    <p class="text-[10px] text-gray-400 tracking-wide">Bloqueas tu tarjeta actual desde tu App y nosotros la recogemos.</p>
-                </div>
-                <div class="bg-black/40 border border-gray-800 p-8 rounded-[2rem] text-center hover:border-tm-gold/50 transition-all duration-300">
-                    <div class="text-tm-gold font-cinzel text-3xl font-black mb-4">03</div>
-                    <h4 class="font-bold text-sm tracking-widest uppercase text-white mb-2">Ingeniería</h4>
-                    <p class="text-[10px] text-gray-400 tracking-wide">Trasplantamos el chip y grabamos con láser de fibra óptica.</p>
-                </div>
-                <div class="bg-black/40 border border-gray-800 p-8 rounded-[2rem] text-center hover:border-tm-gold/50 transition-all duration-300">
-                    <div class="text-tm-gold font-cinzel text-3xl font-black mb-4">04</div>
-                    <h4 class="font-bold text-sm tracking-widest uppercase text-white mb-2">Entrega</h4>
-                    <p class="text-[10px] text-gray-400 tracking-wide">Recibes tu nueva tarjeta de metal, lista para dominar cualquier mesa.</p>
+                <div class="w-full md:w-1/2 fade-up delay-2">
+                    <h3 class="text-tm-gold text-[9px] tracking-[0.5em] uppercase mb-4">Más que una tarjeta</h3>
+                    <h2 class="font-cinzel text-3xl md:text-5xl text-white mb-6 leading-tight">EL RITUAL DE <br>ENTREGA</h2>
+                    <p class="text-gray-400 text-xs font-light leading-loose mb-8">
+                        Recibir una tarjeta BS Premium no es correspondencia bancaria regular. Cada pieza se entrega en un estuche de presentación tallado en negro mate, acompañado de una tarjeta de autenticidad metálica de cortesía y sellado a mano.
+                    </p>
+                    <ul class="space-y-4 text-[11px] text-gray-300 font-light tracking-wide">
+                        <li class="flex items-center gap-3">
+                            <div class="w-1 h-1 rounded-full bg-tm-gold"></div> Estuche Black-Matte Premium
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1 h-1 rounded-full bg-tm-gold"></div> Certificado de Autenticidad Metálico
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div class="w-1 h-1 rounded-full bg-tm-gold"></div> Envíos Asegurados a todo el país
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="relative z-20 glass-panel border-t border-tm-gold/10 w-full mt-10">
-        <div class="max-w-7xl mx-auto px-6 py-12 md:py-16">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
-                <div class="flex flex-col items-center md:items-start space-y-4">
-                    <span class="text-gray-400 text-[10px] uppercase tracking-[0.5em] font-bold">Línea Exclusiva</span>
-                    <a href="tel:3011554320" class="group flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full border border-tm-gold/30 flex items-center justify-center bg-black/50 group-hover:bg-tm-gold/20 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:shadow-[0_0_30px_rgba(212,175,55,0.6)]">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.305-.88-.653-1.474-1.46-1.646-1.757-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        </div>
-                        <span class="font-cinzel text-3xl md:text-4xl font-bold text-gradient-gold drop-shadow-md">+57 301 155 4320</span>
-                    </a>
+    <footer class="relative z-20 border-t border-white/5 bg-black w-full pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-center md:text-left">
+                
+                <div class="flex flex-col items-center md:items-start">
+                    <svg viewBox="0 0 100 100" class="w-10 h-10 mb-4">
+                        <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                        <path d="M45 40 L55 40 L55 60 M45 50 L55 50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+                    </svg>
+                    <span class="font-cinzel text-lg tracking-[0.3em] text-white">B S</span>
+                    <span class="text-[7px] uppercase tracking-[0.4em] text-gray-500 mt-1">Premium Cards</span>
                 </div>
-                <div class="flex flex-col items-center md:items-end space-y-6">
-                    <span class="text-gray-400 text-[10px] uppercase tracking-[0.5em] font-bold">Nuestras Redes</span>
+
+                <div class="flex flex-col items-center md:items-start space-y-4">
+                    <span class="text-gray-600 text-[8px] uppercase tracking-[0.4em] font-light">Atención Élite</span>
+                    <a href="tel:3011554320" class="text-white text-lg font-light tracking-widest hover:text-tm-gold transition-colors">+57 301 155 4320</a>
+                    <span class="text-gray-500 text-[10px] font-light">Cali, Colombia</span>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end space-y-4">
+                    <span class="text-gray-600 text-[8px] uppercase tracking-[0.4em] font-light">Redes Exclusivas</span>
                     <div class="flex items-center gap-6">
-                        <a href="https://www.facebook.com/share/1AefoxeC9U/?mibextid=wwXIfr" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.312h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
                         </a>
-                        <a href="https://www.instagram.com/premiumcardsbs?igsh=MXdrNzJtNGY5b3JhaQ==" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        </a>
-                        <a href="https://www.tiktok.com/@bs_premium.cards?_r=1&_t=ZS-94pGyL10lzF" target="_blank" class="group relative w-14 h-14 flex items-center justify-center rounded-full bg-black/50 border border-tm-gold/30 hover:border-tm-gold hover:bg-tm-gold/10 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.1)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] hover:-translate-y-1">
-                            <svg class="w-5 h-5 text-tm-gold group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/></svg>
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="border-t border-tm-gold/10 mt-12 pt-8 text-center">
-                <p class="text-gray-500 text-[8px] uppercase tracking-[0.5em]">BS Premium Cards © 2026 | Cali, Colombia - Todos los derechos reservados.</p>
+            
+            <div class="border-t border-white/5 pt-6 text-center">
+                <p class="text-[#333] text-[8px] uppercase tracking-[0.4em]">© 2026 BS Premium Cards. El arte del metal.</p>
             </div>
         </div>
     </footer>
@@ -287,138 +391,183 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         let scene, camera, renderer, flyingCards = [], particlesMesh;
-        let pLight1, pLight2, pLight3;
         let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
 
+        // Función para dibujar una textura de tarjeta mucho más detallada
         function createCardTexture(type) {
-            const canvas = document.createElement('canvas'); canvas.width = 1024; canvas.height = 640; const ctx = canvas.getContext('2d');
-            let baseColor, textColor, brandText, textSoft;
+            const canvas = document.createElement('canvas'); 
+            canvas.width = 1024; canvas.height = 640; 
+            const ctx = canvas.getContext('2d');
             
-            if (type === 'black') { baseColor = '#020202'; textColor = '#7a7a7a'; brandText = 'BLACK EDITION'; textSoft = 'rgba(122,122,122,0.5)'; } 
-            else if (type === 'gold') { baseColor = '#bf9b30'; textColor = '#ffffff'; brandText = 'GOLD MEMBER'; textSoft = 'rgba(255,255,255,0.6)'; } 
-            else if (type === 'exotic') { baseColor = '#100020'; textColor = '#00f2fe'; brandText = 'TITANIUM EXOTIC'; textSoft = 'rgba(0,242,254,0.5)'; } 
-            else { baseColor = '#666666'; textColor = '#f0f0f0'; brandText = 'SILVER BRUSH'; textSoft = 'rgba(240,240,240,0.5)'; } 
+            let baseColor, glowColor;
+            if (type === 'gold') { baseColor = '#111'; glowColor = 'rgba(212,175,55,0.1)'; }
+            else { baseColor = '#050505'; glowColor = 'rgba(255,255,255,0.02)'; }
 
-            const grad = ctx.createRadialGradient(512, 320, 0, 512, 320, 800);
-            grad.addColorStop(0, '#111111'); grad.addColorStop(1, baseColor); ctx.fillStyle = grad; ctx.fillRect(0, 0, 1024, 640);
+            // Fondo base
+            ctx.fillStyle = baseColor; 
+            ctx.fillRect(0, 0, 1024, 640);
 
-            ctx.strokeStyle = 'rgba(255,255,255,0.015)'; ctx.lineWidth = 1;
-            for(let i=0; i<1024; i+=2) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i+200, 640); ctx.stroke(); }
+            // Gradiente radial para simular iluminación metálica
+            const grad = ctx.createRadialGradient(512, -100, 0, 512, 320, 1000);
+            grad.addColorStop(0, glowColor);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 640);
 
-            const chipX = 120, chipY = 250, chipW = 150, chipH = 120;
-            ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.beginPath(); ctx.roundRect(chipX+3, chipY+4, chipW, chipH, 15); ctx.fill();
+            // Chip EMV ultra detallado
+            const chipX = 120, chipY = 280, chipW = 140, chipH = 110;
+            ctx.fillStyle = '#000'; ctx.beginPath(); ctx.roundRect(chipX+2, chipY+2, chipW, chipH, 8); ctx.fill();
             const chipGrad = ctx.createLinearGradient(chipX, chipY, chipX+chipW, chipY+chipH);
-            chipGrad.addColorStop(0, '#ffe58f'); chipGrad.addColorStop(0.5, '#d4af37'); chipGrad.addColorStop(1, '#a67c00');
-            ctx.fillStyle = chipGrad; ctx.beginPath(); ctx.roundRect(chipX, chipY, chipW, chipH, 15); ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+            chipGrad.addColorStop(0, '#E5C158'); chipGrad.addColorStop(0.5, '#D4AF37'); chipGrad.addColorStop(1, '#8B6508');
+            ctx.fillStyle = chipGrad; ctx.beginPath(); ctx.roundRect(chipX, chipY, chipW, chipH, 8); ctx.fill();
             
-            ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 2;
-            for(let i=0; i<=3; i++){ 
-                ctx.beginPath(); ctx.moveTo(chipX + (chipW/4)*i, chipY+10); ctx.lineTo(chipX + (chipW/4)*i, chipY+chipH-10); ctx.stroke(); 
-                ctx.beginPath(); ctx.moveTo(chipX + (chipW/4)*i+1, chipY+10); ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.stroke(); ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+            ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1.5;
+            for(let i=1; i<=3; i++){ 
+                ctx.beginPath(); ctx.moveTo(chipX + (chipW/4)*i, chipY); ctx.lineTo(chipX + (chipW/4)*i, chipY+chipH); ctx.stroke(); 
+            }
+            ctx.beginPath(); ctx.moveTo(chipX, chipY+chipH/2); ctx.lineTo(chipX+chipW, chipY+chipH/2); ctx.stroke();
+
+            // Símbolo Contactless
+            ctx.strokeStyle = '#555'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+            for(let i=0; i<4; i++) {
+                ctx.beginPath(); ctx.arc(320, 335, 15 + (i*10), -Math.PI/2.5, Math.PI/2.5); ctx.stroke();
             }
 
-            ctx.strokeStyle = textColor; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.beginPath();
-            ctx.arc(310, 310, 15, -Math.PI/2, Math.PI/2); ctx.moveTo(310, 285); ctx.arc(310, 310, 25, -Math.PI/2, Math.PI/2);
-            ctx.moveTo(310, 275); ctx.arc(310, 310, 35, -Math.PI/2, Math.PI/2); ctx.stroke();
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1; ctx.stroke();
-
-            ctx.font = 'bold 72px monospace'; ctx.letterSpacing = '5px'; ctx.textAlign = 'left';
-            const numText = '5412  8765  4321  1098';
-            ctx.fillStyle = 'rgba(0,0,0,0.8)'; ctx.fillText(numText, 103, 493); ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillText(numText, 99, 489); ctx.fillStyle = textColor; ctx.fillText(numText, 100, 490);
-
-            ctx.font = '35px monospace'; ctx.letterSpacing = '1px';
-            ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillText('08/31', 452, 542); ctx.fillStyle = textSoft; ctx.fillText('08/31', 450, 540);
+            // Textos grabados
+            ctx.fillStyle = '#444';
+            ctx.font = '30px "Montserrat", sans-serif'; 
+            ctx.fillText('BS PREMIUM', 120, 120);
             
-            ctx.font = 'bold 40px monospace'; ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillText('SANTIAGO RAMOS', 102, 582); ctx.fillStyle = textColor; ctx.fillText('SANTIAGO RAMOS', 100, 580);
+            ctx.font = '24px monospace'; ctx.letterSpacing = '2px';
+            ctx.fillText('VALID THRU 12/28', 120, 480);
             
-            ctx.globalAlpha = 0.8; ctx.fillStyle = '#ff5f00'; ctx.beginPath(); ctx.arc(880, 570, 40, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#fdbb30'; ctx.beginPath(); ctx.arc(930, 570, 40, 0, Math.PI*2); ctx.fill(); ctx.globalAlpha = 1;
+            ctx.fillStyle = '#666';
+            ctx.font = 'bold 36px "Montserrat", sans-serif'; ctx.letterSpacing = '4px';
+            ctx.fillText('SANTIAGO RAMOS', 120, 540);
 
-            const texture = new THREE.CanvasTexture(canvas); texture.anisotropy = 16; 
-            return texture;
+            return new THREE.CanvasTexture(canvas);
         }
 
         function init3D() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 35;
+            // Efecto de niebla sutil
+            scene.fog = new THREE.FogExp2(0x030303, 0.015);
+
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 45;
 
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.outputEncoding = THREE.sRGBEncoding; renderer.physicallyCorrectLights = true;
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
             document.getElementById('threejs-canvas-container').appendChild(renderer.domElement);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); scene.add(ambientLight);
-            
-            pLight1 = new THREE.PointLight(0xffffff, 8, 100); pLight1.position.set(0, 10, 20); scene.add(pLight1);
-            pLight2 = new THREE.PointLight(0xd4af37, 6, 80); pLight2.position.set(30, -20, 15); scene.add(pLight2);
-            pLight3 = new THREE.PointLight(0x4c0099, 5, 80); pLight3.position.set(-30, 20, 15); scene.add(pLight3);
+            // Iluminación compleja
+            const ambient = new THREE.AmbientLight(0xffffff, 0.2); scene.add(ambient);
+            const light1 = new THREE.PointLight(0xD4AF37, 5, 100); light1.position.set(20, 20, 20); scene.add(light1);
+            const light2 = new THREE.PointLight(0xffffff, 3, 100); light2.position.set(-20, -20, 20); scene.add(light2);
+            const light3 = new THREE.PointLight(0x4c0099, 4, 100); light3.position.set(0, 30, -10); scene.add(light3);
 
-            const partGeom = new THREE.BufferGeometry(); const partPos = [];
-            for(let i=0; i<400; i++) { partPos.push((Math.random()-0.5)*120, (Math.random()-0.5)*120, (Math.random()-0.5)*60); }
+            // Partículas flotantes (Polvo de oro)
+            const partGeom = new THREE.BufferGeometry(); 
+            const partPos = [];
+            for(let i=0; i<600; i++) { 
+                partPos.push((Math.random()-0.5)*150, (Math.random()-0.5)*150, (Math.random()-0.5)*80); 
+            }
             partGeom.setAttribute('position', new THREE.Float32BufferAttribute(partPos, 3));
-            const partMat = new THREE.PointsMaterial({color: 0xd4af37, size: 0.15, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending});
+            const partMat = new THREE.PointsMaterial({color: 0xD4AF37, size: 0.15, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending});
             particlesMesh = new THREE.Points(partGeom, partMat);
             scene.add(particlesMesh);
 
-            const geometry = new THREE.BoxGeometry(8.5, 5.3, 0.05); 
-            const texBlack = createCardTexture('black'); const texGold = createCardTexture('gold'); 
-            const texSteel = createCardTexture('steel'); const texExotic = createCardTexture('exotic');
+            // Geometría de las tarjetas con bordes biselados simulados
+            const geometry = new THREE.BoxGeometry(8.5, 5.3, 0.08); 
+            const texDark = createCardTexture('dark'); 
+            const texGold = createCardTexture('gold'); 
             
-            const blackMat = new THREE.MeshPhysicalMaterial({ map: texBlack, metalness: 0.9, roughness: 0.05, clearcoat: 1.0, clearcoatRoughness: 0.1, reflectivity: 1.0, envMapIntensity: 1.0, flatShading: false });
-            const goldMat = new THREE.MeshPhysicalMaterial({ map: texGold, metalness: 1.0, roughness: 0.1, clearcoat: 0.5, reflectivity: 1.0, color: 0xffe58f });
-            const steelMat = new THREE.MeshPhysicalMaterial({ map: texSteel, metalness: 0.9, roughness: 0.2, clearcoat: 0.2 });
-            const exoticMat = new THREE.MeshPhysicalMaterial({ map: texExotic, metalness: 1.0, roughness: 0.02, clearcoat: 1.0, clearcoatRoughness: 0, color: 0x200040 });
+            const matDark = new THREE.MeshPhysicalMaterial({ map: texDark, metalness: 0.9, roughness: 0.2, clearcoat: 1.0 });
+            const matGold = new THREE.MeshPhysicalMaterial({ map: texGold, metalness: 1.0, roughness: 0.1, color: 0xffdd88, clearcoat: 0.5 });
 
-            const materials = [blackMat, goldMat, steelMat, exoticMat];
-
-            for (let i = 0; i < 35; i++) {
-                const mesh = new THREE.Mesh(geometry, materials[Math.floor(Math.random() * materials.length)]);
-                mesh.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*110, (Math.random()-0.5)*40 - 5);
+            // Instanciar tarjetas flotantes
+            for (let i = 0; i < 25; i++) {
+                const mesh = new THREE.Mesh(geometry, Math.random() > 0.5 ? matDark : matGold);
+                mesh.position.set((Math.random()-0.5)*120, (Math.random()-0.5)*120, (Math.random()-0.5)*50 - 10);
                 mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-                mesh.material.side = THREE.FrontSide; 
                 scene.add(mesh);
-                flyingCards.push({ mesh, speed: 0.01 + Math.random()*0.03, rotX: 0.002 + Math.random()*0.008, rotY: 0.002 + Math.random()*0.008 });
+                flyingCards.push({ 
+                    mesh, 
+                    speedY: 0.01 + Math.random()*0.02, 
+                    rotX: (Math.random()-0.5)*0.01, 
+                    rotY: (Math.random()-0.5)*0.01 
+                });
             }
             
-            // Efecto Parallax Hipnótico
+            // Interacción del mouse
             document.addEventListener('mousemove', (event) => {
-                mouseX = (event.clientX - window.innerWidth / 2) * 0.01;
-                mouseY = (event.clientY - window.innerHeight / 2) * 0.01;
+                targetX = (event.clientX - window.innerWidth / 2) * 0.03;
+                targetY = (event.clientY - window.innerHeight / 2) * 0.03;
             });
         }
 
         function animate() {
             requestAnimationFrame(animate);
             
-            // Movimiento suave de cámara (Efecto hipnótico)
-            camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            // Interpolación suave para la cámara
+            mouseX += (targetX - mouseX) * 0.05;
+            mouseY += (targetY - mouseY) * 0.05;
+            
+            camera.position.x = mouseX;
+            camera.position.y = -mouseY;
             camera.lookAt(scene.position);
 
+            // Animar tarjetas
             flyingCards.forEach(card => {
-                card.mesh.position.y += card.speed; card.mesh.rotation.x += card.rotX; card.mesh.rotation.y += card.rotY;
+                card.mesh.position.y += card.speedY; 
+                card.mesh.rotation.x += card.rotX; 
+                card.mesh.rotation.y += card.rotY;
                 if (card.mesh.position.y > 60) card.mesh.position.y = -60;
             });
-            const time = Date.now() * 0.0005;
-            pLight1.position.x = Math.sin(time * 0.7) * 20; pLight1.position.z = Math.cos(time * 0.3) * 20 + 10;
-            pLight2.position.y = Math.cos(time * 0.5) * 30; pLight3.position.x = Math.cos(time * 0.2) * 30;
-
-            if(particlesMesh) { particlesMesh.rotation.y += 0.0003; particlesMesh.rotation.x += 0.0001; }
+            
+            // Rotar universo de partículas
+            if(particlesMesh) { 
+                particlesMesh.rotation.y += 0.0005; 
+                particlesMesh.rotation.x += 0.0002; 
+            }
+            
             renderer.render(scene, camera);
         }
 
-        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; 
+            camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+        });
+
+        // Intersección Observer para animaciones On-Scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, { threshold: 0.1 });
 
         window.addEventListener('load', () => {
             init3D(); animate();
+            
+            // Pausar animaciones fade-up hasta que se vean
+            document.querySelectorAll('.fade-up').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+
+            // Remover Loader
             setTimeout(() => {
                 const loader = document.getElementById('stark-loader');
                 loader.style.opacity = '0'; loader.style.visibility = 'hidden';
                 setTimeout(() => { loader.remove(); }, 1000);
-            }, 3000);
+            }, 2500);
         });
     </script>
 </body>
